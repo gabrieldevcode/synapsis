@@ -381,3 +381,117 @@ def delta_time(data, hora):
 
 
 
+
+## FUNÇÕES QUE FAZEM O DIFERENCIAL DA APLICAÇÃO
+
+# deixa salvo de forma organizada o conteudo desejado
+def cadastrar_novo_conteudo(nome_usuario):
+    cabecalho("Novo Cadastro de Estudo")
+    
+    # repositório para os estudos 
+    pasta_estudos = os.path.join('usuarios', nome_usuario, 'estudos')
+
+    if not os.path.exists(pasta_estudos): # se não tiver cria
+        os.makedirs(pasta_estudos)
+    
+    # infos conteudo
+    nome_conteudo = input("Nome do Conteúdo/Matéria: ")
+    texto_referencia = input("Descrição ou Resumo do conteúdo: ")
+    
+    # questionario para avaliar a compreensão do usario
+    print("\nResponda tudo em uma escala de 1 a 10:")
+    dominio = obter_resposta_verificada("Se voce precisasse dar uma aula sobre isso agora, quão bem voce se sairia?")
+    relevancia = obter_resposta_verificada("O quanto esse assunto é fundamental para seus objetivos atuais?")
+    engajamento = obter_resposta_verificada("O quanto você realmente gosta de aprender sobre isso?")
+    
+    dificuldade = ((dominio*0.5) + (relevancia*0.3) + (engajamento*0.2)) # dificuldade atribuida
+
+    horario_registro = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
+    
+
+
+    # --- Cadastrar Quiz ---
+    quiz_dados = []
+    print("\n--- Criação de Quiz Rápido para revisões futuras ---")
+    while True:
+        opcao = input("Deseja adicionar uma pergunta ao quiz? (S/N): ").upper()
+        if opcao == 'S':
+            pergunta = input("Pergunta: ")
+            resposta = input("Resposta correta: ")
+            quiz_dados.append([pergunta, resposta])
+        elif opcao == 'N':
+            break
+        else:
+            print("Entrada inválida! Digite S ou N")
+
+    # --- Arquivos Locais ---
+    caminhos_arquivos = []
+    print("\n--- Anexar Arquivos do Computador ---")
+    print('-> Adicone os caminhos relativos de: Apresentações, documentos, imagens, etc..')
+    while True:
+        opcao = input("Deseja salvar o caminho de um arquivo local? (S/N): ").upper()
+        if opcao == 'S':
+            caminho = input("Cole o caminho do arquivo aqui: ").strip('"')
+            caminhos_arquivos.append(caminho)
+        elif opcao == 'N':
+            break
+        else:
+            print("Entrada inválida! Digite S ou N")
+
+    # --- Video-Aulas ---
+    links = []
+    print("\n--- Salvar links de Videoaulas ---")
+    while True:
+        opcao = input("Deseja salvar o link de alguma video-aula? (S/N): ").upper()
+        if opcao == 'S':
+            link = input("Cole o link do video aqui: ")
+            links.append(link)
+        elif opcao == 'N':
+            break
+        else:
+            print("Entrada inválida! Digite S ou N")
+
+
+    # --- Salvando o Arquivo ---
+    nome_arquivo = f"{nome_conteudo.replace(' ', '_')}.txt"
+    caminho_final = os.path.join(pasta_estudos, nome_arquivo)
+    
+
+    # Salva no arquivo txt as infos do estudo
+    try:
+        with open(caminho_final, 'w') as f:
+
+            f.write(f"Conteudo: {nome_conteudo}\n")
+            f.write(f"Dificuldade: {dificuldade}\n")
+            f.write(f"Data de Inclusao: {horario_registro}\n")
+            f.write(f"Resumo: {texto_referencia}\n")
+            f.write("-" * 20 + "\n")
+            f.write("QUIZ:\n")
+            for item in quiz_dados:
+                f.write(f"{item}\n")
+            f.write("-" * 20 + "\n")
+            f.write("ARQUIVOS:\n")
+            for arq in caminhos_arquivos:
+                f.write(f"{arq}\n")
+            f.write("-" * 20 + "\n")
+            f.write('VIDEO-AULAS:\n')
+            for video in links:
+                f.write(f'{video}\n')
+
+
+        linha()                
+        delay_texto("Conteúdo salvo com sucesso!", 0.02)
+        linha
+        time.sleep(1)
+
+    except Exception as e:
+        print(f"Erro ao salvar: {e}")
+        enter_para_pular()
+
+
+
+
+
+
+
+

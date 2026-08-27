@@ -827,3 +827,102 @@ def listar_editar_deletar(nome_usuario):
 
 
 
+
+# UNIÃO DAS FUNÇÕES AUXILIARES PARA FORMAR O MENU DO USUARIO
+
+
+def menu_usuario(nome_usuario):
+
+
+    pasta_estudos = os.path.join('usuarios', nome_usuario, 'estudos')
+    if not os.path.exists(pasta_estudos):
+        os.makedirs(pasta_estudos)
+
+
+    caminho_pessoal = os.path.join('usuarios', nome_usuario, f'pessoal_{nome_usuario}.txt')
+    with open(caminho_pessoal, 'r') as f:
+        dados_pessoais = f.readlines()
+        qualidade_aluno = float(dados_pessoais[2].strip())
+
+
+    num_acessos = contador_acessos(nome_usuario)
+    
+    limpar_terminal()
+    linha()
+    if num_acessos == 1:
+        delay_texto(f"Olá {nome_usuario}! Seja muito bem-vindo(a) à sua área de estudos!", 0.03)
+        delay_texto("Preparei tudo para o seu primeiro acesso.", 0.03)
+
+
+    else:
+        delay_texto(f"Bem-vindo de volta, {nome_usuario}!", 0.03)
+        print(f"Acessos totais: {num_acessos}")
+    linha()
+    time.sleep(1)
+
+
+
+
+    while True:
+
+        todos_arquivos = os.listdir(pasta_estudos)
+        qtd_estudos = 0
+        for arquivo in todos_arquivos:
+            if arquivo.endswith('.txt'):
+                qtd_estudos = qtd_estudos + 1
+
+
+        ranking = obter_ranking_estudos(nome_usuario, qualidade_aluno)
+        
+        cabecalho(f"Olá {nome_usuario}")
+        print(f"Estudos Cadastrados: {qtd_estudos}".center(60))
+        print(f"Acessos: {num_acessos}".center(60))
+        linha()
+        print("Ranking de Prioridades:")
+        if ranking:
+            print(f"{'PRIORIDADE':<12} | {'CONTEÚDO':<30}")
+            print("-" * 60)
+            for i, item in enumerate(ranking): 
+                # Acessa os elementos dentro do 'item'
+                score = item[0]
+                nome = item[1]
+                print(f"{i +1: <12} | {nome:<30}")
+
+
+
+
+
+        else:
+            print("Nenhum conteúdo para rankear ainda.")
+        
+        linha()
+
+        # Menu
+        print("1. Cadastrar novo conteúdo")
+        print("2. Revisar Conteúdo")
+        print("3. Listar conteúdos (Visualizar / Editar / Deletar)")
+        print("4. Sair")
+        linha()
+        
+        escolha = input("Escolha: ")
+        
+        if escolha == '1':
+            cadastrar_novo_conteudo(nome_usuario)
+            
+        elif escolha == '2':
+            revisar_conteudo(nome_usuario)            
+            
+        elif escolha == '3':
+            listar_editar_deletar(nome_usuario)
+
+        elif escolha == '4':
+            return
+
+        else:
+            print("Opção inválida. Tente novamente.")
+            time.sleep(1)
+
+
+
+
+

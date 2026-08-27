@@ -564,3 +564,152 @@ def obter_ranking_estudos(nome_usuario, qualidade_aluno):
 
 
 
+# método de revisar aquilo que voce já cadastrou de forma eficaz
+def revisar_conteudo(nome_usuario):
+
+    pasta_estudos = os.path.join('usuarios', nome_usuario, 'estudos')
+    if not os.path.exists(pasta_estudos):
+        print("Nenhum estudo cadastrado ainda.")
+        time.sleep(1)
+        return
+
+    arquivos = []
+    
+
+    lista_completa = os.listdir(pasta_estudos)
+
+    for arquivo in lista_completa:
+        if arquivo.endswith('.txt'):
+            arquivos.append(arquivo)
+
+    if not arquivos:
+        print("Nenhum estudo cadastrado ainda.")
+        time.sleep(1)
+        return
+
+    cabecalho("Revisar Conteúdo")
+    print("Escolha o conteúdo para revisar:")
+
+    for i, arq in enumerate(arquivos): # melhor maneira de percorrer uma lista sabendo seu indice
+        print(f"{i+1}. {arq.replace('.txt','').replace('_',' ')}")
+
+    print()
+    print("Digite 0 para voltar")
+
+    # verificação do valor
+    try:
+        linha()
+        escolha = int(input("Opção: "))
+        linha()
+    except ValueError:
+        print("Entrada inválida.")
+        time.sleep(1)
+        return
+    if escolha == 0:
+        return
+    if escolha < 1 or escolha > len(arquivos):
+        print("Opção inválida.")
+        time.sleep(1)
+        return
+
+    # guarda qual é o arquivo desejado
+    arquivo_escolhido = arquivos[escolha-1]
+    caminho = os.path.join(pasta_estudos, arquivo_escolhido)
+    try:
+        with open(caminho, 'r') as f:
+            linhas = f.readlines()
+    except Exception as e:
+        print(f"Erro ao abrir o arquivo: {e}")
+        time.sleep(1)
+        return
+
+    # mostra resumo
+    resumo = ""
+    quiz = []
+    arquivos_locais = []
+    videos = []
+    leitura_quiz = False
+    leitura_arquivos = False
+    leitura_videos = False
+
+
+    for ln in linhas:
+        # pular linhas de separador
+        if ln.strip().startswith("-"):
+            continue
+
+        if ln.startswith("Resumo:"):
+            resumo = ln.replace("Resumo:", "").strip()
+            leitura_quiz = leitura_arquivos = leitura_videos = False
+
+        elif ln.strip() == "QUIZ:":
+            leitura_quiz = True
+            leitura_arquivos = leitura_videos = False
+            continue
+
+        elif ln.strip() == "ARQUIVOS:":
+            leitura_arquivos = True
+            leitura_quiz = leitura_videos = False
+            continue
+
+        elif ln.strip() == "VIDEO-AULAS:":
+            leitura_quiz = leitura_arquivos = False
+            leitura_videos = True
+            continue
+
+        if leitura_quiz and ln:
+            try:
+                # Transforma a string "['P', 'R']" em uma lista real ['P', 'R']
+                dados_linha = ast.literal_eval(ln)
+                if isinstance(dados_linha, list):
+                    quiz.append(dados_linha)
+            except:
+                # Se a linha não for uma lista válida, ignora
+                continue
+        elif leitura_arquivos:
+            arquivos_locais.append(ln.strip())
+        elif leitura_videos:
+            videos.append(ln.strip())
+
+    cabecalho(f"Revisando: {arquivo_escolhido.replace('.txt','')}")
+    print("Resumo:")
+    print(resumo)
+    print()
+    if arquivos_locais:
+        print('Voce pode copiar os caminhos relativos abaixo, colocar em seu explorador de arquivos e visualizar conteudos da matéria')
+        print("Arquivos anexados:")
+        for arq in arquivos_locais:
+            print(f" - {arq}")
+    if videos:
+        print("Vídeos relacionados ao conteudo:")
+        for v in videos:
+            print(f" - {v}")
+    linha()
+    enter_para_pular()
+
+
+    # Fazer o quiz se existir
+    if not quiz:
+        print("Nenhum quiz cadastrado para este conteúdo.")
+        enter_para_pular()
+        return
+
+    cabecalho("Quiz de Revisão")
+    acertos = 0
+    for i, (pergunta, resposta_correta) in enumerate(quiz, start=1):
+        print(f"Pergunta {i}: {pergunta}")
+        resposta_usuario = input("Resposta: ").strip()
+        if resposta_usuario.lower() == str(resposta_correta).strip().lower():
+            print("Correto!")
+            acertos += 1
+        else:
+            print(f"Errado. Resposta correta: {resposta_correta}")
+        linha()
+        time.sleep(0.8)
+
+    total = len(quiz)
+    print(f"Você acertou {acertos} de {total} ({(acertos/total)*100:.1f}%).")
+    enter_para_pular()
+
+
+

@@ -495,3 +495,72 @@ def cadastrar_novo_conteudo(nome_usuario):
 
 
 
+# Por meio do algoritmo de definição de prioridade calculada, se define ordena uma lista para fazer as revisões
+def obter_ranking_estudos(nome_usuario, qualidade_aluno):
+
+    pasta_estudos = os.path.join('usuarios', nome_usuario, 'estudos')
+    # Busca todos os estudos do usuario
+    try:
+        arquivos = []
+        lista_completa = os.listdir(pasta_estudos)
+
+        for arquivo in lista_completa:
+            arquivos.append(arquivo)
+
+    except Exception:
+        return []
+
+
+    # Extraindo dados do arquivo de estudo específico
+    lista_rankeada = []
+    for estudo in arquivos:
+        caminho_completo_estudo = os.path.join(pasta_estudos, estudo)
+        
+        with open(caminho_completo_estudo, 'r') as f:
+            dados = f.readlines()
+            nome_conteudo = dados[0].strip().replace("Conteudo: ", "")
+            dificuldade_atribuida_usuario = float(dados[1].strip().replace("Dificuldade: ", ""))
+
+            data_inclusao = dados[2].strip().replace('Data de Inclusao: ', '')
+            dia_hora = data_inclusao.split(' ')
+            dia = dia_hora[0]
+            hora = dia_hora[1]
+
+            tempo_decorrido = delta_time(dia, hora) # função para diferença de tempo
+
+            # Para um melhor calculo de prioridades, defini algumas faixas temporais para identificar se falta pouco, médio ou muito tempo
+            if tempo_decorrido < 4:
+                vt = 10.0
+            elif 4 <= tempo_decorrido < 12:
+                vt = 9.2
+            elif 12 <= tempo_decorrido < 24:
+                vt = 8.0
+            elif 24 <= tempo_decorrido < 48:
+                vt = 7.0 
+            elif 48 <= tempo_decorrido < 96:
+                vt = 5.5
+            elif 96 <= tempo_decorrido < 240:
+                vt = 2.0
+            else:
+                vt = 0.5
+                                
+            
+            # Quanto maior o resultado menor a nescessidade de rever o conteudo
+            prioridade_calculada = qualidade_aluno* 0.2 + dificuldade_atribuida_usuario * 0.5 + tempo_decorrido *0.5
+
+            # Adiciona a lista
+            lista_rankeada.append([prioridade_calculada, nome_conteudo]) 
+    
+
+    lista_rankeada.sort(key=lambda x: x[0])
+
+    return lista_rankeada
+
+
+
+
+
+
+
+
+

@@ -926,3 +926,40 @@ def menu_usuario(nome_usuario):
 
 
 
+
+def main():
+
+    inicializar_programa()
+    mostrar_introducao()
+    habilitado = ''
+    while habilitado != True:
+        cabecalho("Menu Principal")
+        print("1. Login")
+        print("2. Cadastrar-se")
+        print("3. Sair")
+        linha()
+        
+        escolha = input("Escolha uma opção: ")
+        
+        if escolha == "1":
+            usuario_logado = processo_login()
+            
+            if usuario_logado:
+                menu_usuario(usuario_logado)
+
+        elif escolha == "2":
+            processo_cadastro()
+        elif escolha == "3":
+            limpar_terminal()
+            print("Obrigado por usar o Gerenciador de Estudos.")
+            print("Até logo!")
+            break 
+        else:
+            print("\nOpção inválida. Por favor, tente novamente.")
+            time.sleep(1) 
+
+
+
+
+if __name__ == "__main__":
+    main()

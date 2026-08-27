@@ -320,3 +320,64 @@ def processo_login():
 
 
 
+
+#   ÁREA DO USUÁRIO
+
+
+## FUNÇÕES AUXILIARES
+
+# Contabiliza quantas vezes o usuario acessou a aplicação, com a finalidade de promover melhor experiencia
+def contador_acessos(nome_usuario):
+
+    caminho_user = os.path.join('usuarios', nome_usuario, f'pessoal_{nome_usuario}.txt')
+    indice_qtd_acessos = 3 # referencia ao local do arquivo pessoal do usuario que corresponde a quantidade de acessos
+
+    try:
+        try:
+            with open(caminho_user, 'r') as f:
+                linhas = f.readlines()
+        except FileNotFoundError:
+            print('Erro ao encontrar arquivo pessoal')
+            return
+
+        
+        acessos_atuais = int(linhas[indice_qtd_acessos].strip()) # transforma de str para int
+
+        novo_acesso = acessos_atuais + 1 # adiciona 1 a variavel de acessos
+
+        linhas[indice_qtd_acessos] = f'{novo_acesso}\n' # modifica a lista
+
+        with open(caminho_user, 'w') as f: # reescreve o documento pessoal, porém com  +1 acesso
+            f.writelines(linhas)
+            
+        return novo_acesso # retorna a qtd atual de acessos
+            
+    except Exception as e:
+        print(f"Erro inesperado ao processar acessos para '{nome_usuario}': {e}")
+        return 1
+
+
+
+# faz a diferença entre a hora atual e aquela que o usario cadastrou o conteudo
+def delta_time(data, hora):
+
+    data_hora_inicial = datetime.datetime.strptime(f"{data} {hora}", "%d/%m/%Y %H:%M") # formata a hora
+
+    agora = datetime.datetime.now()
+    diferenca = agora - data_hora_inicial
+    horas_decorridas = diferenca.total_seconds() / 3600.0
+
+    return horas_decorridas # retorna o tempo total
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -713,3 +713,117 @@ def revisar_conteudo(nome_usuario):
 
 
 
+
+def listar_editar_deletar(nome_usuario):
+
+    pasta_estudos = os.path.join('usuarios', nome_usuario, 'estudos')
+    if not os.path.exists(pasta_estudos):
+        print("Nenhum estudo cadastrado ainda.")
+        time.sleep(1)
+        return
+
+    while True:
+        cabecalho("Seus Estudos - Listar / Editar / Deletar")
+        arquivos = []    
+        todos_os_itens = os.listdir(pasta_estudos)
+        for item in todos_os_itens:
+            arquivos.append(item)
+
+
+        if not arquivos:
+            print("Nenhum estudo cadastrado ainda.")
+            enter_para_pular()
+            return
+
+        for i, arq in enumerate(arquivos):
+            print(f"{i+1}. {arq.replace('.txt','').replace('_',' ')}")
+        print("0. Voltar")
+        try:
+            escolha = int(input("Escolha um item para ver/editar/deletar (número): "))
+        except ValueError:
+            print("Entrada inválida.")
+            time.sleep(1)
+            continue
+
+        if escolha == 0:
+            return
+        if escolha < 1 or escolha > len(arquivos):
+            print("Opção inválida.")
+            time.sleep(1)
+            continue
+
+        arquivo_selecionado = arquivos[escolha-1]
+        caminho = os.path.join(pasta_estudos, arquivo_selecionado)
+        # mostrar opções
+        cabecalho(f"Conteúdo: {arquivo_selecionado.replace('.txt','')}")
+        print("1. Visualizar conteúdo")
+        print("2. Editar resumo")
+        print("3. Renomear conteúdo")
+        print("4. Deletar conteúdo")
+        print("0. Voltar")
+        op = input("Opção: ")
+
+        if op == '1':
+            try:
+                with open(caminho, 'r') as f:
+                    print(f.read())
+            except Exception as e:
+                print(f"Erro ao abrir o arquivo: {e}")
+            enter_para_pular()
+
+        elif op == '2':
+            # editar resumo (linha que começa com 'Resumo:')
+            try:
+                with open(caminho, 'r') as f:
+                    linhas = f.readlines()
+                for idx, l in enumerate(linhas):
+                    if l.startswith("Resumo:"):
+                        print("Resumo atual:")
+                        print(l.replace("Resumo:", "").strip())
+                        novo = input("Novo resumo (deixe vazio para manter): ")
+                        if novo.strip() != "":
+                            linhas[idx] = f"Resumo: {novo}\n"
+                        break
+                with open(caminho, 'w') as f:
+                    f.writelines(linhas)
+                print("Resumo atualizado com sucesso.")
+            except Exception as e:
+                print(f"Erro ao editar: {e}")
+            enter_para_pular()
+
+        elif op == '3':
+            novo_nome = input("Digite o novo nome do conteúdo (apenas o nome, sem extensão): ").strip()
+            if novo_nome == "":
+                print("Nome inválido.")
+                time.sleep(1)
+            else:
+                novo_arquivo = f"{novo_nome.replace(' ', '_')}.txt"
+                novo_caminho = os.path.join(pasta_estudos, novo_arquivo)
+                try:
+                    os.rename(caminho, novo_caminho)
+                    print("Renomeado com sucesso.")
+                except Exception as e:
+                    print(f"Erro ao renomear: {e}")
+                time.sleep(1)
+
+        elif op == '4':
+            confirmacao = input(f"Tem certeza que deseja apagar '{arquivo_selecionado}'? (DIGITE 'SIM'): ")
+            if confirmacao == 'SIM':
+                try:
+                    os.remove(caminho)
+                    print("Conteúdo deletado com sucesso.")
+                except Exception as e:
+                    print(f"Erro ao deletar: {e}")
+            else:
+                print("Operação cancelada.")
+            time.sleep(1)
+
+        elif op == '0':
+            continue
+        else:
+            print("Opção inválida.")
+            time.sleep(1)
+
+
+
+

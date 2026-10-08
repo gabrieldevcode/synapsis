@@ -306,7 +306,11 @@ Answer every question on a scale from 1 to 10, where:
     weight1, weight2, weight3, weight4, weight5 = 0.1, 0.2, 0.3, 0.3 , 0.1
     quality = p1 * weight1 + p2 * weight2 + p3 * weight3 + p4 * weight4 + p5 * weight5
 
-    typewriter(f"\nYour performance coefficient is {quality:.2f}")
+    print()
+    progress_bar("Analyzing your answers ", duration=1.5, width=25)
+    print()
+    typewriter("Your performance coefficient is:")
+    animated_meter("CR", quality, maximum=10, width=40)
     print('\n1 → low content absorption \n' \
     '10 → excellent understanding of the subjects')
     press_enter()

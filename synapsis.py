@@ -828,35 +828,35 @@ def manage_studies(username):
 
 
 
-# UNIÃO DAS FUNÇÕES AUXILIARES PARA FORMAR O MENU DO USUARIO
+# BRINGING THE HELPER FUNCTIONS TOGETHER INTO THE USER MENU
 
 
-def menu_usuario(nome_usuario):
+def user_menu(username):
 
 
-    pasta_estudos = os.path.join('users', nome_usuario, 'studies')
-    if not os.path.exists(pasta_estudos):
-        os.makedirs(pasta_estudos)
+    studies_folder = os.path.join('users', username, 'studies')
+    if not os.path.exists(studies_folder):
+        os.makedirs(studies_folder)
 
 
-    caminho_pessoal = os.path.join('users', nome_usuario, f'profile_{nome_usuario}.txt')
-    with open(caminho_pessoal, 'r') as f:
-        dados_pessoais = f.readlines()
-        qualidade_aluno = float(dados_pessoais[2].strip())
+    profile_path = os.path.join('users', username, f'profile_{username}.txt')
+    with open(profile_path, 'r') as f:
+        profile_data = f.readlines()
+        student_quality = float(profile_data[2].strip())
 
 
-    num_acessos = count_access(nome_usuario)
-    
+    access_count = count_access(username)
+
     clear_terminal()
     line()
-    if num_acessos == 1:
-        typewriter(f"Olá {nome_usuario}! Seja muito bem-vindo(a) à sua área de estudos!", 0.03)
-        typewriter("Preparei tudo para o seu primeiro acesso.", 0.03)
+    if access_count == 1:
+        typewriter(f"Hi {username}! A very warm welcome to your study area!", 0.03)
+        typewriter("I've got everything ready for your first visit.", 0.03)
 
 
     else:
-        typewriter(f"Bem-vindo de volta, {nome_usuario}!", 0.03)
-        print(f"Acessos totais: {num_acessos}")
+        typewriter(f"Welcome back, {username}!", 0.03)
+        print(f"Total accesses: {access_count}")
     line()
     time.sleep(1)
 
@@ -865,61 +865,61 @@ def menu_usuario(nome_usuario):
 
     while True:
 
-        todos_arquivos = os.listdir(pasta_estudos)
-        qtd_estudos = 0
-        for arquivo in todos_arquivos:
-            if arquivo.endswith('.txt'):
-                qtd_estudos = qtd_estudos + 1
+        all_files = os.listdir(studies_folder)
+        study_count = 0
+        for file in all_files:
+            if file.endswith('.txt'):
+                study_count = study_count + 1
 
 
-        ranking = get_study_ranking(nome_usuario, qualidade_aluno)
-        
-        header(f"Olá {nome_usuario}")
-        print(f"Estudos Cadastrados: {qtd_estudos}".center(60))
-        print(f"Acessos: {num_acessos}".center(60))
+        ranking = get_study_ranking(username, student_quality)
+
+        header(f"Hi {username}")
+        print(f"Registered Studies: {study_count}".center(60))
+        print(f"Accesses: {access_count}".center(60))
         line()
-        print("Ranking de Prioridades:")
+        print("Priority Ranking:")
         if ranking:
-            print(f"{'PRIORIDADE':<12} | {'CONTEÚDO':<30}")
+            print(f"{'PRIORITY':<12} | {'CONTENT':<30}")
             print("-" * 60)
-            for i, item in enumerate(ranking): 
-                # Acessa os elementos dentro do 'item'
+            for i, item in enumerate(ranking):
+                # Reads the elements inside 'item'
                 score = item[0]
-                nome = item[1]
-                print(f"{i +1: <12} | {nome:<30}")
+                name = item[1]
+                print(f"{i +1: <12} | {name:<30}")
 
 
 
 
 
         else:
-            print("Nenhum conteúdo para rankear ainda.")
-        
+            print("Nothing to rank yet.")
+
         line()
 
         # Menu
-        print("1. Cadastrar novo conteúdo")
-        print("2. Revisar Conteúdo")
-        print("3. Listar conteúdos (Visualizar / Editar / Deletar)")
-        print("4. Sair")
+        print("1. Register new content")
+        print("2. Review content")
+        print("3. List content (View / Edit / Delete)")
+        print("4. Log out")
         line()
-        
-        escolha = input("Escolha: ")
-        
-        if escolha == '1':
-            register_content(nome_usuario)
-            
-        elif escolha == '2':
-            review_content(nome_usuario)            
-            
-        elif escolha == '3':
-            manage_studies(nome_usuario)
 
-        elif escolha == '4':
+        choice = input("Choice: ")
+
+        if choice == '1':
+            register_content(username)
+
+        elif choice == '2':
+            review_content(username)
+
+        elif choice == '3':
+            manage_studies(username)
+
+        elif choice == '4':
             return
 
         else:
-            print("Opção inválida. Tente novamente.")
+            print("Invalid option. Try again.")
             time.sleep(1)
 
 
@@ -931,32 +931,32 @@ def main():
 
     initialize_program()
     show_intro()
-    habilitado = ''
-    while habilitado != True:
-        header("Menu Principal")
+    enabled = ''
+    while enabled != True:
+        header("Main Menu")
         print("1. Login")
-        print("2. Cadastrar-se")
-        print("3. Sair")
+        print("2. Sign up")
+        print("3. Exit")
         line()
-        
-        escolha = input("Escolha uma opção: ")
-        
-        if escolha == "1":
-            usuario_logado = login()
-            
-            if usuario_logado:
-                menu_usuario(usuario_logado)
 
-        elif escolha == "2":
+        choice = input("Choose an option: ")
+
+        if choice == "1":
+            logged_user = login()
+
+            if logged_user:
+                user_menu(logged_user)
+
+        elif choice == "2":
             sign_up()
-        elif escolha == "3":
+        elif choice == "3":
             clear_terminal()
-            print("Obrigado por usar o Gerenciador de Estudos.")
-            print("Até logo!")
-            break 
+            print("Thank you for using the Study Manager.")
+            print("See you soon!")
+            break
         else:
-            print("\nOpção inválida. Por favor, tente novamente.")
-            time.sleep(1) 
+            print("\nInvalid option. Please try again.")
+            time.sleep(1)
 
 
 

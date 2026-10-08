@@ -83,14 +83,16 @@ def pause(seconds):
         time.sleep(seconds)
 
 
-# Spins next to a message for a moment, then swaps the spinner for a check mark
-def spinner(message, duration=1.0):
+# Spins next to a message for a moment, then swaps the spinner for a check
+# mark, or for a cross when the step failed (ok=False)
+def spinner(message, duration=1.0, ok=True):
     if animations_enabled():
         for i in range(int(duration / FRAME_TIME)):
             frame = SPINNER_FRAMES[i % len(SPINNER_FRAMES)]
             print(f"\r{paint(frame, CYAN)} {message}", end="", flush=True)
             time.sleep(FRAME_TIME)
-    print(f"\r{paint('✔', GREEN)} {message}")
+    result = paint('✔', GREEN) if ok else paint('✘', RED)
+    print(f"\r{result} {message}")
 
 
 # Draws a bar like ███████░░░ for a fraction between 0 and 1
@@ -360,6 +362,10 @@ def sign_up():
 
     questionnaire_result = performance_coefficient()
 
+    clear_terminal()
+    print()
+    spinner("Creating your profile", 1.2)
+
     try:
         os.makedirs(user_path)
         profile_file_path = os.path.join(user_path, f'profile_{name}.txt') # sign-up information saved in a txt file
@@ -440,8 +446,12 @@ def login():
             print('Password:')
 
         typed_password = input("→ ")
+        password_ok = typed_password == correct_password
 
-        if typed_password == correct_password:
+        print()
+        spinner("Checking your password", 0.6, ok=password_ok)
+
+        if password_ok:
             typewriter('\nLogin successful! Taking you to your study area...', 0.03)
             time.sleep(2)
             return name
@@ -596,6 +606,9 @@ def register_content(username):
     file_name = f"{content_name.replace(' ', '_')}.txt"
     final_path = os.path.join(studies_folder, file_name)
 
+
+    print()
+    spinner("Saving your content", 0.8)
 
     # Saves the study info in the txt file
     try:
@@ -988,6 +1001,9 @@ def user_menu(username):
     access_count = count_access(username)
 
     clear_terminal()
+    print()
+    spinner("Loading your study area", 1.0)
+    print()
     line()
     if access_count == 1:
         typewriter(f"Hi {username}! A very warm welcome to your study area!", 0.03)

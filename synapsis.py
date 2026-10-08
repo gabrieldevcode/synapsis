@@ -185,130 +185,130 @@ Answer every question on a scale from 1 to 10, where:
 
 
 
-# FUNÇÕES DE LOGIN E CADASTRO
+# LOGIN AND SIGN-UP FUNCTIONS
 
 
-def processo_cadastro():
-    pasta_usuarios = 'users' # criada no inicio da aplicação
-    header("Cadastro de Usuário")
+def sign_up():
+    users_folder = 'users' # created when the application starts
+    header("User Sign-up")
     print()
 
-    nome = input("Nome de usuário: ")
+    name = input("Username: ")
     print()
-    senha = input("Crie uma senha: ")
-    if senha == '': # verificacao simples de senha
-        print(f"\n Sua senha não pode ser vazia")
+    password = input("Create a password: ")
+    if password == '': # simple password check
+        print(f"\n Your password cannot be empty")
         time.sleep(2)
-        input('Pressione ENTER para voltar ao menu')
+        input('Press ENTER to go back to the menu')
         return
 
     print()
     line()
 
-    caminho_usuario = os.path.join(pasta_usuarios, nome) # caminho da pasta do usuario especifico
+    user_path = os.path.join(users_folder, name) # path to this specific user's folder
 
-    if os.path.exists(caminho_usuario): # verifica se já existe alguém com o mesmo nome de usuario por meio do nome das pastas
-        print("\nErro: Este nome de usuário já existe.")
-        print("Tente um nome diferente ou faça login.\n")
+    if os.path.exists(user_path): # checks, through the folder names, whether someone already has this username
+        print("\nError: This username already exists.")
+        print("Try a different name or log in.\n")
         line()
-        input('Pressione ENTER para voltar ao menu')
+        input('Press ENTER to go back to the menu')
         return
 
     print()
-    typewriter('Agora iremos definir o seu perfil de estudante')
+    typewriter('Now we will set up your student profile')
     press_enter()
 
-    resultado_questionario = performance_coefficient() 
+    questionnaire_result = performance_coefficient()
 
     try:
-        os.makedirs(caminho_usuario)
-        caminho_arquivo_pessoal = os.path.join(caminho_usuario, f'profile_{nome}.txt') # informações de cadastro salvas em um arquivo txt
+        os.makedirs(user_path)
+        profile_file_path = os.path.join(user_path, f'profile_{name}.txt') # sign-up information saved in a txt file
 
-        with open(caminho_arquivo_pessoal, "w") as f:
-            f.write(f'{nome}\n')
-            f.write(f'{senha}\n')
-            f.write(f'{resultado_questionario:.3f}\n')
-            f.write('0\n') # logins totais feitos
+        with open(profile_file_path, "w") as f:
+            f.write(f'{name}\n')
+            f.write(f'{password}\n')
+            f.write(f'{questionnaire_result:.3f}\n')
+            f.write('0\n') # total logins made
 
         clear_terminal()
-        header("Cadastro realizado com sucesso!")
+        header("Sign-up completed successfully!")
         time.sleep(4)
 
     except OSError as e:
-        print(f"\nErro ao criar a pasta ou arquivo: {e}")
-        print("Tente novamente.")
+        print(f"\nError while creating the folder or file: {e}")
+        print("Please try again.")
         time.sleep(3)
 
     except Exception as e:
-        print(f"\nOcorreu um erro inesperado: {e}")
+        print(f"\nAn unexpected error occurred: {e}")
         time.sleep(3)
 
 
 
-def processo_login():
+def login():
 
-    pasta_usuarios = 'users'
+    users_folder = 'users'
     header("Login")
     print()
-    print("Nome")
-    nome = input("→ ")
+    print("Name")
+    name = input("→ ")
 
-    #info_pessoais
-    caminho_usuario = os.path.join(pasta_usuarios, nome) 
-    caminho_pessoal = os.path.join(caminho_usuario, f'profile_{nome}.txt')
+    #personal_info
+    user_path = os.path.join(users_folder, name)
+    profile_path = os.path.join(user_path, f'profile_{name}.txt')
 
-    # verifica se o nome corresponde a alguma pasta
-    if not os.path.exists(caminho_usuario):
-        typewriter("\nUsuário não encontrado.", 0.03)
-        typewriter("Verifique o nome de usuário ou cadastre-se.", 0.03)
+    # checks whether the name matches any folder
+    if not os.path.exists(user_path):
+        typewriter("\nUser not found.", 0.03)
+        typewriter("Check the username or sign up.", 0.03)
         time.sleep(1)
-        input('Pressione ENTER para voltar ao menu')
+        input('Press ENTER to go back to the menu')
         return
-    
 
-    # Busca a senha correta no arquivo pessoal
-    senha_correta = None
+
+    # Reads the correct password from the profile file
+    correct_password = None
     try:
-        with open(caminho_pessoal, 'r') as f:
-            linhas = f.readlines()
-        senha_correta = linhas[1].strip() # a senha corresponde a line 2, logo indice 1
+        with open(profile_path, 'r') as f:
+            lines = f.readlines()
+        correct_password = lines[1].strip() # the password is on line 2, so index 1
 
 
     except FileNotFoundError:
-        print(f"\n Arquivo '{caminho_pessoal}' não foi encontrado.")
-        print("Erro no processo de cadastro.")
+        print(f"\n File '{profile_path}' was not found.")
+        print("Something went wrong during sign-up.")
         time.sleep(2)
-        input('Pressione ENTER para voltar ao menu')
+        input('Press ENTER to go back to the menu')
         return
 
     except Exception as e:
-        print(f"\n Ocorreu um erro ao ler o perfil: {e}")
+        print(f"\n An error occurred while reading the profile: {e}")
         time.sleep(2)
-        input('Pressione ENTER para voltar ao menu')
+        input('Press ENTER to go back to the menu')
         return
 
 
-    # Tentativas de Senha
-    max_tentativas = 3
-    # Faz a verificação limitada de tentativas
-    for tentativa_atual in range(1, max_tentativas + 1):
+    # Password attempts
+    max_attempts = 3
+    # Limits how many times the password can be tried
+    for current_attempt in range(1, max_attempts + 1):
         print()
-        if tentativa_atual == 1:
-            print("Senha")
+        if current_attempt == 1:
+            print("Password")
         else:
-            print(f"(Tentativa {tentativa_atual} de {max_tentativas})")
-            print('Senha:')
+            print(f"(Attempt {current_attempt} of {max_attempts})")
+            print('Password:')
 
-        senha_digitada = input("→ ")
+        typed_password = input("→ ")
 
-        if senha_digitada == senha_correta:
-            typewriter('\nLogin bem-sucedido! Você será direcionado para a aba de usuários...', 0.03)
+        if typed_password == correct_password:
+            typewriter('\nLogin successful! Taking you to your study area...', 0.03)
             time.sleep(2)
-            return nome
+            return name
         else:
-            typewriter(f"\nSua senha esta incorreta. Tente novamente:")
+            typewriter(f"\nYour password is incorrect. Try again:")
 
-    print("\n[ERRO] Número máximo de tentativas excedido.")
+    print("\n[ERROR] Maximum number of attempts exceeded.")
     time.sleep(2)
     return
 
@@ -942,13 +942,13 @@ def main():
         escolha = input("Escolha uma opção: ")
         
         if escolha == "1":
-            usuario_logado = processo_login()
+            usuario_logado = login()
             
             if usuario_logado:
                 menu_usuario(usuario_logado)
 
         elif escolha == "2":
-            processo_cadastro()
+            sign_up()
         elif escolha == "3":
             clear_terminal()
             print("Obrigado por usar o Gerenciador de Estudos.")

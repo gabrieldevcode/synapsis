@@ -564,151 +564,151 @@ def get_study_ranking(username, student_quality):
 
 
 
-# método de revisar aquilo que voce já cadastrou de forma eficaz
-def revisar_conteudo(nome_usuario):
+# an effective way to review what you have already registered
+def review_content(username):
 
-    pasta_estudos = os.path.join('users', nome_usuario, 'studies')
-    if not os.path.exists(pasta_estudos):
-        print("Nenhum estudo cadastrado ainda.")
+    studies_folder = os.path.join('users', username, 'studies')
+    if not os.path.exists(studies_folder):
+        print("No studies registered yet.")
         time.sleep(1)
         return
 
-    arquivos = []
-    
+    files = []
 
-    lista_completa = os.listdir(pasta_estudos)
 
-    for arquivo in lista_completa:
-        if arquivo.endswith('.txt'):
-            arquivos.append(arquivo)
+    full_list = os.listdir(studies_folder)
 
-    if not arquivos:
-        print("Nenhum estudo cadastrado ainda.")
+    for file in full_list:
+        if file.endswith('.txt'):
+            files.append(file)
+
+    if not files:
+        print("No studies registered yet.")
         time.sleep(1)
         return
 
-    header("Revisar Conteúdo")
-    print("Escolha o conteúdo para revisar:")
+    header("Review Content")
+    print("Choose the content to review:")
 
-    for i, arq in enumerate(arquivos): # melhor maneira de percorrer uma lista sabendo seu indice
-        print(f"{i+1}. {arq.replace('.txt','').replace('_',' ')}")
+    for i, file in enumerate(files): # best way to walk a list while knowing its index
+        print(f"{i+1}. {file.replace('.txt','').replace('_',' ')}")
 
     print()
-    print("Digite 0 para voltar")
+    print("Type 0 to go back")
 
-    # verificação do valor
+    # validating the value
     try:
         line()
-        escolha = int(input("Opção: "))
+        choice = int(input("Option: "))
         line()
     except ValueError:
-        print("Entrada inválida.")
+        print("Invalid input.")
         time.sleep(1)
         return
-    if escolha == 0:
+    if choice == 0:
         return
-    if escolha < 1 or escolha > len(arquivos):
-        print("Opção inválida.")
+    if choice < 1 or choice > len(files):
+        print("Invalid option.")
         time.sleep(1)
         return
 
-    # guarda qual é o arquivo desejado
-    arquivo_escolhido = arquivos[escolha-1]
-    caminho = os.path.join(pasta_estudos, arquivo_escolhido)
+    # keeps track of the chosen file
+    chosen_file = files[choice-1]
+    path = os.path.join(studies_folder, chosen_file)
     try:
-        with open(caminho, 'r') as f:
-            linhas = f.readlines()
+        with open(path, 'r') as f:
+            lines = f.readlines()
     except Exception as e:
-        print(f"Erro ao abrir o arquivo: {e}")
+        print(f"Error opening the file: {e}")
         time.sleep(1)
         return
 
-    # mostra resumo
-    resumo = ""
+    # shows the summary
+    summary = ""
     quiz = []
-    arquivos_locais = []
+    local_files = []
     videos = []
-    leitura_quiz = False
-    leitura_arquivos = False
-    leitura_videos = False
+    reading_quiz = False
+    reading_files = False
+    reading_videos = False
 
 
-    for ln in linhas:
-        # pular linhas de separador
+    for ln in lines:
+        # skip separator lines
         if ln.strip().startswith("-"):
             continue
 
         if ln.startswith("Summary:"):
-            resumo = ln.replace("Summary:", "").strip()
-            leitura_quiz = leitura_arquivos = leitura_videos = False
+            summary = ln.replace("Summary:", "").strip()
+            reading_quiz = reading_files = reading_videos = False
 
         elif ln.strip() == "QUIZ:":
-            leitura_quiz = True
-            leitura_arquivos = leitura_videos = False
+            reading_quiz = True
+            reading_files = reading_videos = False
             continue
 
         elif ln.strip() == "FILES:":
-            leitura_arquivos = True
-            leitura_quiz = leitura_videos = False
+            reading_files = True
+            reading_quiz = reading_videos = False
             continue
 
         elif ln.strip() == "VIDEO LESSONS:":
-            leitura_quiz = leitura_arquivos = False
-            leitura_videos = True
+            reading_quiz = reading_files = False
+            reading_videos = True
             continue
 
-        if leitura_quiz and ln:
+        if reading_quiz and ln:
             try:
-                # Transforma a string "['P', 'R']" em uma lista real ['P', 'R']
-                dados_linha = ast.literal_eval(ln)
-                if isinstance(dados_linha, list):
-                    quiz.append(dados_linha)
+                # Turns the string "['Q', 'A']" into a real list ['Q', 'A']
+                line_data = ast.literal_eval(ln)
+                if isinstance(line_data, list):
+                    quiz.append(line_data)
             except:
-                # Se a line não for uma lista válida, ignora
+                # If the line is not a valid list, ignore it
                 continue
-        elif leitura_arquivos:
-            arquivos_locais.append(ln.strip())
-        elif leitura_videos:
+        elif reading_files:
+            local_files.append(ln.strip())
+        elif reading_videos:
             videos.append(ln.strip())
 
-    header(f"Revisando: {arquivo_escolhido.replace('.txt','')}")
+    header(f"Reviewing: {chosen_file.replace('.txt','')}")
     print("Summary:")
-    print(resumo)
+    print(summary)
     print()
-    if arquivos_locais:
-        print('Voce pode copiar os caminhos relativos abaixo, colocar em seu explorador de arquivos e visualizar conteudos da matéria')
-        print("Arquivos anexados:")
-        for arq in arquivos_locais:
-            print(f" - {arq}")
+    if local_files:
+        print('You can copy the relative paths below into your file explorer to open the subject materials')
+        print("Attached files:")
+        for file in local_files:
+            print(f" - {file}")
     if videos:
-        print("Vídeos relacionados ao conteudo:")
+        print("Videos related to this content:")
         for v in videos:
             print(f" - {v}")
     line()
     press_enter()
 
 
-    # Fazer o quiz se existir
+    # Take the quiz if there is one
     if not quiz:
-        print("Nenhum quiz cadastrado para este conteúdo.")
+        print("No quiz registered for this content.")
         press_enter()
         return
 
-    header("Quiz de Revisão")
-    acertos = 0
-    for i, (pergunta, resposta_correta) in enumerate(quiz, start=1):
-        print(f"Pergunta {i}: {pergunta}")
-        resposta_usuario = input("Resposta: ").strip()
-        if resposta_usuario.lower() == str(resposta_correta).strip().lower():
-            print("Correto!")
-            acertos += 1
+    header("Review Quiz")
+    correct_answers = 0
+    for i, (question, correct_answer) in enumerate(quiz, start=1):
+        print(f"Question {i}: {question}")
+        user_answer = input("Answer: ").strip()
+        if user_answer.lower() == str(correct_answer).strip().lower():
+            print("Correct!")
+            correct_answers += 1
         else:
-            print(f"Errado. Resposta correta: {resposta_correta}")
+            print(f"Wrong. Correct answer: {correct_answer}")
         line()
         time.sleep(0.8)
 
     total = len(quiz)
-    print(f"Você acertou {acertos} de {total} ({(acertos/total)*100:.1f}%).")
+    print(f"You got {correct_answers} out of {total} right ({(correct_answers/total)*100:.1f}%).")
     press_enter()
 
 
@@ -910,7 +910,7 @@ def menu_usuario(nome_usuario):
             register_content(nome_usuario)
             
         elif escolha == '2':
-            revisar_conteudo(nome_usuario)            
+            review_content(nome_usuario)            
             
         elif escolha == '3':
             listar_editar_deletar(nome_usuario)

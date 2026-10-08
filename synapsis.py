@@ -321,53 +321,53 @@ def login():
 
 
 
-#   ÁREA DO USUÁRIO
+#   USER AREA
 
 
-## FUNÇÕES AUXILIARES
+## HELPER FUNCTIONS
 
-# Contabiliza quantas vezes o usuario acessou a aplicação, com a finalidade de promover melhor experiencia
-def contador_acessos(nome_usuario):
+# Counts how many times the user has opened the application, to provide a better experience
+def count_access(username):
 
-    caminho_user = os.path.join('users', nome_usuario, f'profile_{nome_usuario}.txt')
-    indice_qtd_acessos = 3 # referencia ao local do arquivo pessoal do usuario que corresponde a quantidade de acessos
+    user_path = os.path.join('users', username, f'profile_{username}.txt')
+    access_count_index = 3 # line of the user's profile file that holds the number of accesses
 
     try:
         try:
-            with open(caminho_user, 'r') as f:
-                linhas = f.readlines()
+            with open(user_path, 'r') as f:
+                lines = f.readlines()
         except FileNotFoundError:
-            print('Erro ao encontrar arquivo pessoal')
+            print('Error finding the profile file')
             return
 
-        
-        acessos_atuais = int(linhas[indice_qtd_acessos].strip()) # transforma de str para int
 
-        novo_acesso = acessos_atuais + 1 # adiciona 1 a variavel de acessos
+        current_accesses = int(lines[access_count_index].strip()) # converts from str to int
 
-        linhas[indice_qtd_acessos] = f'{novo_acesso}\n' # modifica a lista
+        new_access = current_accesses + 1 # adds 1 to the access count
 
-        with open(caminho_user, 'w') as f: # reescreve o documento pessoal, porém com  +1 acesso
-            f.writelines(linhas)
-            
-        return novo_acesso # retorna a qtd atual de acessos
-            
+        lines[access_count_index] = f'{new_access}\n' # updates the list
+
+        with open(user_path, 'w') as f: # rewrites the profile file, now with +1 access
+            f.writelines(lines)
+
+        return new_access # returns the current number of accesses
+
     except Exception as e:
-        print(f"Erro inesperado ao processar acessos para '{nome_usuario}': {e}")
+        print(f"Unexpected error while processing accesses for '{username}': {e}")
         return 1
 
 
 
-# faz a diferença entre a hora atual e aquela que o usario cadastrou o conteudo
-def delta_time(data, hora):
+# computes the difference between now and the moment the user registered the content
+def delta_time(date, hour):
 
-    data_hora_inicial = datetime.datetime.strptime(f"{data} {hora}", "%d/%m/%Y %H:%M") # formata a hora
+    start_datetime = datetime.datetime.strptime(f"{date} {hour}", "%d/%m/%Y %H:%M") # parses the time
 
-    agora = datetime.datetime.now()
-    diferenca = agora - data_hora_inicial
-    horas_decorridas = diferenca.total_seconds() / 3600.0
+    now = datetime.datetime.now()
+    difference = now - start_datetime
+    elapsed_hours = difference.total_seconds() / 3600.0
 
-    return horas_decorridas # retorna o tempo total
+    return elapsed_hours # returns the total time
 
 
 
@@ -845,7 +845,7 @@ def menu_usuario(nome_usuario):
         qualidade_aluno = float(dados_pessoais[2].strip())
 
 
-    num_acessos = contador_acessos(nome_usuario)
+    num_acessos = count_access(nome_usuario)
     
     clear_terminal()
     line()

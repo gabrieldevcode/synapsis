@@ -112,13 +112,13 @@ def progress_bar(label, duration=1.5, width=30):
 
 
 # Fills a bar while the number counts up from zero to the final value
-def animated_meter(label, value, maximum=10, decimals=2, duration=1.2, width=30):
+def animated_meter(label, value, maximum=10, decimals=2, duration=1.2, width=30, suffix=""):
     steps = 40 if animations_enabled() else 0
     for step in range(steps):
         current = value * step / steps
-        print(f"\r{label} [{bar(current / maximum, width)}] {current:.{decimals}f}", end="", flush=True)
+        print(f"\r{label} [{bar(current / maximum, width)}] {current:.{decimals}f}{suffix}", end="", flush=True)
         time.sleep(duration / steps)
-    print(f"\r{label} [{bar(value / maximum, width)}] {value:.{decimals}f}")
+    print(f"\r{label} [{bar(value / maximum, width)}] {value:.{decimals}f}{suffix}")
 
 
 # Prints one line at a time, like a list sliding onto the screen
@@ -853,15 +853,17 @@ def review_content(username):
         print(f"Question {i}: {question}")
         user_answer = input("Answer: ").strip()
         if user_answer.lower() == str(correct_answer).strip().lower():
-            print("Correct!")
+            print(paint("✔ Correct!", GREEN))
             correct_answers += 1
         else:
-            print(f"Wrong. Correct answer: {correct_answer}")
+            print(paint("✘ Wrong.", RED) + f" Correct answer: {correct_answer}")
         line()
         time.sleep(0.8)
 
     total = len(quiz)
-    print(f"You got {correct_answers} out of {total} right ({(correct_answers/total)*100:.1f}%).")
+    percentage = (correct_answers/total)*100
+    animated_meter("Score", percentage, maximum=100, decimals=1, width=40, suffix="%")
+    print(f"You got {correct_answers} out of {total} right ({percentage:.1f}%).")
     press_enter()
 
 
@@ -1019,6 +1021,8 @@ def user_menu(username):
 
 
 
+    first_render = True # the ranking only slides in on the first screen after login
+
     while True:
 
         all_files = os.listdir(studies_folder)
@@ -1038,11 +1042,14 @@ def user_menu(username):
         if ranking:
             print(f"{'PRIORITY':<12} | {'CONTENT':<30}")
             print("-" * 60)
+            rows = []
             for i, item in enumerate(ranking):
                 # Reads the elements inside 'item'
                 score = item[0]
                 name = item[1]
-                print(f"{i +1: <12} | {name:<30}")
+                rows.append(f"{i +1: <12} | {name:<30}")
+            reveal_lines(rows, delay=0.08 if first_render else 0)
+            first_render = False
 
 
 

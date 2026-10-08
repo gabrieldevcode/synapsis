@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import datetime
 import ast
@@ -7,9 +8,9 @@ import ast
 
 # LAYOUT AND DESIGN
 def clear_terminal():
-    if os.name == 'nt': 
+    if os.name == 'nt':
         os.system('cls')
-    else: 
+    else:
         os.system('clear')
 
 
@@ -25,6 +26,9 @@ def header(text):
 
 
 def typewriter(text, delay=0.02):
+    if not animations_enabled():
+        print(text)
+        return
     for character in text:
         print(character, end="", flush=True)
         time.sleep(delay)
@@ -33,7 +37,93 @@ def typewriter(text, delay=0.02):
 
 def press_enter():
     input("\nPress ENTER to continue...")
-    
+
+
+
+
+
+
+# ANIMATIONS
+#
+# Every animation draws its frames on a single line with '\r' and always ends
+# by printing the final frame, so the screen looks the same with or without
+# the motion. Set SYNAPSIS_NO_ANIMATION=1 to skip the motion entirely (slow
+# terminals, screen readers, or just to go faster) and NO_COLOR=1 to drop the
+# colors.
+
+SPINNER_FRAMES = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
+FRAME_TIME = 0.08 # seconds each frame stays on screen
+
+CYAN, GREEN, RED, GRAY = 45, 42, 203, 244 # 256-color palette codes
+
+
+def animations_enabled():
+    return os.environ.get('SYNAPSIS_NO_ANIMATION', '') == ''
+
+
+def colors_enabled():
+    return os.environ.get('NO_COLOR', '') == '' and sys.stdout.isatty()
+
+
+# On Windows, running any shell command switches the console into the mode
+# that understands ANSI escape codes (colors and cursor movement)
+def enable_ansi():
+    if os.name == 'nt':
+        os.system('')
+
+
+def paint(text, color):
+    if not colors_enabled():
+        return text
+    return f"\033[38;5;{color}m{text}\033[0m"
+
+
+def pause(seconds):
+    if animations_enabled():
+        time.sleep(seconds)
+
+
+# Spins next to a message for a moment, then swaps the spinner for a check mark
+def spinner(message, duration=1.0):
+    if animations_enabled():
+        for i in range(int(duration / FRAME_TIME)):
+            frame = SPINNER_FRAMES[i % len(SPINNER_FRAMES)]
+            print(f"\r{paint(frame, CYAN)} {message}", end="", flush=True)
+            time.sleep(FRAME_TIME)
+    print(f"\r{paint('✔', GREEN)} {message}")
+
+
+# Draws a bar like ███████░░░ for a fraction between 0 and 1
+def bar(fraction, width=30):
+    fraction = min(max(fraction, 0), 1)
+    filled = round(fraction * width)
+    return paint("█" * filled, CYAN) + paint("░" * (width - filled), GRAY)
+
+
+def progress_bar(label, duration=1.5, width=30):
+    steps = 30 if animations_enabled() else 0
+    for step in range(steps):
+        fraction = step / steps
+        print(f"\r{label} [{bar(fraction, width)}] {fraction:4.0%}", end="", flush=True)
+        time.sleep(duration / steps)
+    print(f"\r{label} [{bar(1, width)}] 100%")
+
+
+# Fills a bar while the number counts up from zero to the final value
+def animated_meter(label, value, maximum=10, decimals=2, duration=1.2, width=30):
+    steps = 40 if animations_enabled() else 0
+    for step in range(steps):
+        current = value * step / steps
+        print(f"\r{label} [{bar(current / maximum, width)}] {current:.{decimals}f}", end="", flush=True)
+        time.sleep(duration / steps)
+    print(f"\r{label} [{bar(value / maximum, width)}] {value:.{decimals}f}")
+
+
+# Prints one line at a time, like a list sliding onto the screen
+def reveal_lines(lines, delay=0.06):
+    for text in lines:
+        print(text)
+        pause(delay)
 
 
 
@@ -929,6 +1019,7 @@ def user_menu(username):
 
 def main():
 
+    enable_ansi()
     initialize_program()
     show_intro()
     enabled = ''

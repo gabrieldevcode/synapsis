@@ -5,34 +5,34 @@ import ast
 
 
 
-# ORGANIZAÇÃO E DESIGN
-def limpar_terminal():
+# LAYOUT AND DESIGN
+def clear_terminal():
     if os.name == 'nt': 
         os.system('cls')
     else: 
         os.system('clear')
 
 
-def linha():
+def line():
     print("═" * 60)
 
 
-def cabecalho(texto):
-    limpar_terminal()
-    linha()
-    print(texto.center(60))
-    linha()
+def header(text):
+    clear_terminal()
+    line()
+    print(text.center(60))
+    line()
 
 
-def delay_texto(texto, delay=0.02):
-    for caracter in texto:
-        print(caracter, end="", flush=True)
+def typewriter(text, delay=0.02):
+    for character in text:
+        print(character, end="", flush=True)
         time.sleep(delay)
     print()
 
 
-def enter_para_pular():
-    input("\nPressione ENTER para continuar...")
+def press_enter():
+    input("\nPress ENTER to continue...")
     
 
 
@@ -61,7 +61,7 @@ def inicializar_programa():
 # Explicacao breve da aplicacao 
 def mostrar_introducao():
 
-    cabecalho("Bem-vindo ao SYNAPSIS")
+    header("Bem-vindo ao SYNAPSIS")
 
     msg = ("""
     Nossa missão é transformar a revisão de conteúdos
@@ -73,9 +73,9 @@ def mostrar_introducao():
     Vamos combater a desorganização juntos.
     """)
     
-    delay_texto(msg)
-    linha()
-    enter_para_pular()
+    typewriter(msg)
+    line()
+    press_enter()
 
 
 
@@ -104,11 +104,11 @@ def obter_resposta_verificada(pergunta):
 # Define a qualidade como aluno do usuário
 def coeficiente_rendimento():
 
-    cabecalho("Definindo o seu Ritmo")
+    header("Definindo o seu Ritmo")
     print()
 
 
-    delay_texto("As seguintes perguntas tem por objetivo personalizar a sua \n" \
+    typewriter("As seguintes perguntas tem por objetivo personalizar a sua \n" \
     "experiencia no Synapsis " \
     "e melhorar seu desempenho no estudo  \n" \
     "por repetições espaçadas", 0.01)
@@ -116,12 +116,12 @@ def coeficiente_rendimento():
     print()
     time.sleep(0.5)
 
-    delay_texto("As perguntas são pessoais e não tem por objetivo constranger,\n" \
+    typewriter("As perguntas são pessoais e não tem por objetivo constranger,\n" \
     "e sim ajudar no seu próprio desenvolvimento!", 0.01)
 
     print()
     time.sleep(0.5)
-    linha()
+    line()
 
     print('''
 Responda todas as perguntas em uma escala de 1 a 10, sendo:
@@ -131,9 +131,9 @@ Responda todas as perguntas em uma escala de 1 a 10, sendo:
 10: Me identifico completamente / Sou excelente nisso.
                  
 ''')
-    linha()
-    enter_para_pular()
-    limpar_terminal()
+    line()
+    press_enter()
+    clear_terminal()
 
 
 
@@ -159,8 +159,8 @@ Responda todas as perguntas em uma escala de 1 a 10, sendo:
 # ==============================================================================================================
 
 
-    limpar_terminal()
-    cabecalho('Questionario Preenchido com Sucesso!!!')
+    clear_terminal()
+    header('Questionario Preenchido com Sucesso!!!')
 
 
 
@@ -170,10 +170,10 @@ Responda todas as perguntas em uma escala de 1 a 10, sendo:
     peso1, peso2, peso3, peso4, peso5 = 0.1, 0.2, 0.3, 0.3 , 0.1
     qualidade = p1 * peso1 + p2 * peso2 + p3 * peso3 + p4 * peso4 + p5 * peso5
 
-    delay_texto(f"\nSeu coeficiente de rendimento é {qualidade:.2f}")
+    typewriter(f"\nSeu coeficiente de rendimento é {qualidade:.2f}")
     print('\n1 → baixa absorção de conteúdos \n' \
     '10 → excelente compreensão das matérias')
-    enter_para_pular()
+    press_enter()
 
 #==============================================================================================================
 
@@ -190,7 +190,7 @@ Responda todas as perguntas em uma escala de 1 a 10, sendo:
 
 def processo_cadastro():
     pasta_usuarios = 'users' # criada no inicio da aplicação
-    cabecalho("Cadastro de Usuário")
+    header("Cadastro de Usuário")
     print()
 
     nome = input("Nome de usuário: ")
@@ -203,20 +203,20 @@ def processo_cadastro():
         return
 
     print()
-    linha()
+    line()
 
     caminho_usuario = os.path.join(pasta_usuarios, nome) # caminho da pasta do usuario especifico
 
     if os.path.exists(caminho_usuario): # verifica se já existe alguém com o mesmo nome de usuario por meio do nome das pastas
         print("\nErro: Este nome de usuário já existe.")
         print("Tente um nome diferente ou faça login.\n")
-        linha()
+        line()
         input('Pressione ENTER para voltar ao menu')
         return
 
     print()
-    delay_texto('Agora iremos definir o seu perfil de estudante')
-    enter_para_pular()
+    typewriter('Agora iremos definir o seu perfil de estudante')
+    press_enter()
 
     resultado_questionario = coeficiente_rendimento() 
 
@@ -230,8 +230,8 @@ def processo_cadastro():
             f.write(f'{resultado_questionario:.3f}\n')
             f.write('0\n') # logins totais feitos
 
-        limpar_terminal()
-        cabecalho("Cadastro realizado com sucesso!")
+        clear_terminal()
+        header("Cadastro realizado com sucesso!")
         time.sleep(4)
 
     except OSError as e:
@@ -248,7 +248,7 @@ def processo_cadastro():
 def processo_login():
 
     pasta_usuarios = 'users'
-    cabecalho("Login")
+    header("Login")
     print()
     print("Nome")
     nome = input("→ ")
@@ -259,8 +259,8 @@ def processo_login():
 
     # verifica se o nome corresponde a alguma pasta
     if not os.path.exists(caminho_usuario):
-        delay_texto("\nUsuário não encontrado.", 0.03)
-        delay_texto("Verifique o nome de usuário ou cadastre-se.", 0.03)
+        typewriter("\nUsuário não encontrado.", 0.03)
+        typewriter("Verifique o nome de usuário ou cadastre-se.", 0.03)
         time.sleep(1)
         input('Pressione ENTER para voltar ao menu')
         return
@@ -271,7 +271,7 @@ def processo_login():
     try:
         with open(caminho_pessoal, 'r') as f:
             linhas = f.readlines()
-        senha_correta = linhas[1].strip() # a senha corresponde a linha 2, logo indice 1
+        senha_correta = linhas[1].strip() # a senha corresponde a line 2, logo indice 1
 
 
     except FileNotFoundError:
@@ -302,11 +302,11 @@ def processo_login():
         senha_digitada = input("→ ")
 
         if senha_digitada == senha_correta:
-            delay_texto('\nLogin bem-sucedido! Você será direcionado para a aba de usuários...', 0.03)
+            typewriter('\nLogin bem-sucedido! Você será direcionado para a aba de usuários...', 0.03)
             time.sleep(2)
             return nome
         else:
-            delay_texto(f"\nSua senha esta incorreta. Tente novamente:")
+            typewriter(f"\nSua senha esta incorreta. Tente novamente:")
 
     print("\n[ERRO] Número máximo de tentativas excedido.")
     time.sleep(2)
@@ -386,7 +386,7 @@ def delta_time(data, hora):
 
 # deixa salvo de forma organizada o conteudo desejado
 def cadastrar_novo_conteudo(nome_usuario):
-    cabecalho("Novo Cadastro de Estudo")
+    header("Novo Cadastro de Estudo")
     
     # repositório para os estudos 
     pasta_estudos = os.path.join('users', nome_usuario, 'studies')
@@ -479,14 +479,14 @@ def cadastrar_novo_conteudo(nome_usuario):
                 f.write(f'{video}\n')
 
 
-        linha()                
-        delay_texto("Conteúdo salvo com sucesso!", 0.02)
-        linha
+        line()                
+        typewriter("Conteúdo salvo com sucesso!", 0.02)
+        line
         time.sleep(1)
 
     except Exception as e:
         print(f"Erro ao salvar: {e}")
-        enter_para_pular()
+        press_enter()
 
 
 
@@ -587,7 +587,7 @@ def revisar_conteudo(nome_usuario):
         time.sleep(1)
         return
 
-    cabecalho("Revisar Conteúdo")
+    header("Revisar Conteúdo")
     print("Escolha o conteúdo para revisar:")
 
     for i, arq in enumerate(arquivos): # melhor maneira de percorrer uma lista sabendo seu indice
@@ -598,9 +598,9 @@ def revisar_conteudo(nome_usuario):
 
     # verificação do valor
     try:
-        linha()
+        line()
         escolha = int(input("Opção: "))
-        linha()
+        line()
     except ValueError:
         print("Entrada inválida.")
         time.sleep(1)
@@ -664,14 +664,14 @@ def revisar_conteudo(nome_usuario):
                 if isinstance(dados_linha, list):
                     quiz.append(dados_linha)
             except:
-                # Se a linha não for uma lista válida, ignora
+                # Se a line não for uma lista válida, ignora
                 continue
         elif leitura_arquivos:
             arquivos_locais.append(ln.strip())
         elif leitura_videos:
             videos.append(ln.strip())
 
-    cabecalho(f"Revisando: {arquivo_escolhido.replace('.txt','')}")
+    header(f"Revisando: {arquivo_escolhido.replace('.txt','')}")
     print("Summary:")
     print(resumo)
     print()
@@ -684,17 +684,17 @@ def revisar_conteudo(nome_usuario):
         print("Vídeos relacionados ao conteudo:")
         for v in videos:
             print(f" - {v}")
-    linha()
-    enter_para_pular()
+    line()
+    press_enter()
 
 
     # Fazer o quiz se existir
     if not quiz:
         print("Nenhum quiz cadastrado para este conteúdo.")
-        enter_para_pular()
+        press_enter()
         return
 
-    cabecalho("Quiz de Revisão")
+    header("Quiz de Revisão")
     acertos = 0
     for i, (pergunta, resposta_correta) in enumerate(quiz, start=1):
         print(f"Pergunta {i}: {pergunta}")
@@ -704,12 +704,12 @@ def revisar_conteudo(nome_usuario):
             acertos += 1
         else:
             print(f"Errado. Resposta correta: {resposta_correta}")
-        linha()
+        line()
         time.sleep(0.8)
 
     total = len(quiz)
     print(f"Você acertou {acertos} de {total} ({(acertos/total)*100:.1f}%).")
-    enter_para_pular()
+    press_enter()
 
 
 
@@ -723,7 +723,7 @@ def listar_editar_deletar(nome_usuario):
         return
 
     while True:
-        cabecalho("Seus Estudos - Listar / Editar / Deletar")
+        header("Seus Estudos - Listar / Editar / Deletar")
         arquivos = []    
         todos_os_itens = os.listdir(pasta_estudos)
         for item in todos_os_itens:
@@ -732,7 +732,7 @@ def listar_editar_deletar(nome_usuario):
 
         if not arquivos:
             print("Nenhum estudo cadastrado ainda.")
-            enter_para_pular()
+            press_enter()
             return
 
         for i, arq in enumerate(arquivos):
@@ -755,7 +755,7 @@ def listar_editar_deletar(nome_usuario):
         arquivo_selecionado = arquivos[escolha-1]
         caminho = os.path.join(pasta_estudos, arquivo_selecionado)
         # mostrar opções
-        cabecalho(f"Conteúdo: {arquivo_selecionado.replace('.txt','')}")
+        header(f"Conteúdo: {arquivo_selecionado.replace('.txt','')}")
         print("1. Visualizar conteúdo")
         print("2. Editar resumo")
         print("3. Renomear conteúdo")
@@ -769,10 +769,10 @@ def listar_editar_deletar(nome_usuario):
                     print(f.read())
             except Exception as e:
                 print(f"Erro ao abrir o arquivo: {e}")
-            enter_para_pular()
+            press_enter()
 
         elif op == '2':
-            # editar resumo (linha que começa com 'Resumo:')
+            # editar resumo (line que começa com 'Resumo:')
             try:
                 with open(caminho, 'r') as f:
                     linhas = f.readlines()
@@ -789,7 +789,7 @@ def listar_editar_deletar(nome_usuario):
                 print("Resumo atualizado com sucesso.")
             except Exception as e:
                 print(f"Erro ao editar: {e}")
-            enter_para_pular()
+            press_enter()
 
         elif op == '3':
             novo_nome = input("Digite o novo nome do conteúdo (apenas o nome, sem extensão): ").strip()
@@ -847,17 +847,17 @@ def menu_usuario(nome_usuario):
 
     num_acessos = contador_acessos(nome_usuario)
     
-    limpar_terminal()
-    linha()
+    clear_terminal()
+    line()
     if num_acessos == 1:
-        delay_texto(f"Olá {nome_usuario}! Seja muito bem-vindo(a) à sua área de estudos!", 0.03)
-        delay_texto("Preparei tudo para o seu primeiro acesso.", 0.03)
+        typewriter(f"Olá {nome_usuario}! Seja muito bem-vindo(a) à sua área de estudos!", 0.03)
+        typewriter("Preparei tudo para o seu primeiro acesso.", 0.03)
 
 
     else:
-        delay_texto(f"Bem-vindo de volta, {nome_usuario}!", 0.03)
+        typewriter(f"Bem-vindo de volta, {nome_usuario}!", 0.03)
         print(f"Acessos totais: {num_acessos}")
-    linha()
+    line()
     time.sleep(1)
 
 
@@ -874,10 +874,10 @@ def menu_usuario(nome_usuario):
 
         ranking = obter_ranking_estudos(nome_usuario, qualidade_aluno)
         
-        cabecalho(f"Olá {nome_usuario}")
+        header(f"Olá {nome_usuario}")
         print(f"Estudos Cadastrados: {qtd_estudos}".center(60))
         print(f"Acessos: {num_acessos}".center(60))
-        linha()
+        line()
         print("Ranking de Prioridades:")
         if ranking:
             print(f"{'PRIORIDADE':<12} | {'CONTEÚDO':<30}")
@@ -895,14 +895,14 @@ def menu_usuario(nome_usuario):
         else:
             print("Nenhum conteúdo para rankear ainda.")
         
-        linha()
+        line()
 
         # Menu
         print("1. Cadastrar novo conteúdo")
         print("2. Revisar Conteúdo")
         print("3. Listar conteúdos (Visualizar / Editar / Deletar)")
         print("4. Sair")
-        linha()
+        line()
         
         escolha = input("Escolha: ")
         
@@ -933,11 +933,11 @@ def main():
     mostrar_introducao()
     habilitado = ''
     while habilitado != True:
-        cabecalho("Menu Principal")
+        header("Menu Principal")
         print("1. Login")
         print("2. Cadastrar-se")
         print("3. Sair")
-        linha()
+        line()
         
         escolha = input("Escolha uma opção: ")
         
@@ -950,7 +950,7 @@ def main():
         elif escolha == "2":
             processo_cadastro()
         elif escolha == "3":
-            limpar_terminal()
+            clear_terminal()
             print("Obrigado por usar o Gerenciador de Estudos.")
             print("Até logo!")
             break 

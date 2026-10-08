@@ -1,127 +1,130 @@
 # Synapsis
 
-Gerenciador de estudos por repetição espaçada que roda inteiro no terminal, em
-Python puro, sem instalar nada além do próprio Python.
+A spaced-repetition study manager that runs entirely in the terminal, in pure
+Python, with nothing to install besides Python itself.
 
-O Synapsis guarda o que você estudou, mede o quanto você domina cada assunto e
-usa isso para montar uma fila de revisão — em vez de deixar a decisão do "o que
-eu reviso hoje?" para a sua memória, que é justamente a parte que está falhando.
+Synapsis keeps track of what you studied, measures how well you master each
+subject and uses that to build a review queue, instead of leaving the "what
+should I review today?" decision to your memory, which is exactly the part
+that is failing.
 
-Este é o projeto de conclusão da disciplina de **Computação 1**.
+This is the final project for the **Computer Science 1** course.
 
-> **Privacidade:** a pasta `usuarios/`, onde ficam os perfis e todos os
-> conteúdos cadastrados, **não** faz parte deste repositório — está no
-> `.gitignore`. Um clone novo vem sem nenhum dado de estudante. Para ver o
-> programa funcionando com conteúdo, existe um gerador de usuário fictício,
-> descrito em [Uso rápido](#-uso-rápido).
+> **Privacy:** the `users/` folder, where profiles and all registered content
+> live, is **not** part of this repository: it is in `.gitignore`. A fresh
+> clone ships with no student data at all. To see the program working with
+> content, there is a fictional user generator, described in
+> [Quick start](#-quick-start).
 
 ![Python](https://img.shields.io/badge/python-3.6%2B-blue)
-![Licença](https://img.shields.io/badge/licença-MIT-green)
-![Dependências](https://img.shields.io/badge/dependências-nenhuma-lightgrey)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Dependencies](https://img.shields.io/badge/dependencies-none-lightgrey)
 
 ---
 
-## Índice
+## Contents
 
-- [O problema](#-o-problema)
-- [Como funciona, em uma passada](#-como-funciona-em-uma-passada)
-- [Instalação](#-instalação)
-- [Uso rápido](#-uso-rápido)
-- [O perfil do estudante](#-o-perfil-do-estudante)
-- [Cadastrando um conteúdo](#-cadastrando-um-conteúdo)
-- [O ranking de prioridades](#-o-ranking-de-prioridades)
-- [A revisão e o quiz](#-a-revisão-e-o-quiz)
-- [Formato dos arquivos](#-formato-dos-arquivos)
-- [Rede de segurança](#-rede-de-segurança)
-- [Arquitetura](#-arquitetura)
-- [Privacidade e segurança](#-privacidade-e-segurança)
-- [Testes](#-testes)
-- [Limites conhecidos](#-limites-conhecidos)
-- [Licença](#-licença)
-
----
-
-## 🎯 O problema
-
-Quem estuda várias matérias ao mesmo tempo acumula três problemas que não são de
-conteúdo, e sim de organização.
-
-**O material se espalha.** O PDF da aula está em `Downloads`, o vídeo está num
-link perdido no histórico, o resumo está num caderno e a lista de exercícios
-está no e-mail. Na hora de revisar, metade do tempo vai embora só reunindo as
-peças — e essa fricção é motivo suficiente para não revisar.
-
-**A escolha do que revisar é péssima.** Deixado por conta própria, o estudante
-revisa o que é confortável: a matéria que ele já entende, porque revisar aquilo
-dá a sensação boa de estar indo bem. O conteúdo que ele não domina é justamente
-o que ele evita, e é justamente o que precisaria de revisão.
-
-**O esquecimento não avisa.** A queda de retenção é silenciosa. Não existe
-notificação de "você esqueceu Recursividade"; você só descobre na prova.
-
-O Synapsis ataca os três. Cada conteúdo cadastrado carrega, num único arquivo, o
-resumo, os caminhos dos materiais, os links das videoaulas e um quiz que o
-próprio estudante escreveu enquanto o assunto ainda estava fresco. E, em vez de
-mostrar essa lista em ordem alfabética ou de cadastro, o programa a ordena por
-uma prioridade calculada a partir de três coisas: o quanto o estudante domina
-aquele assunto, há quanto tempo ele viu aquilo, e o perfil geral dele como
-estudante.
-
-Ou seja: a fila de revisão é montada pelo programa, não pela vontade do dia.
+- [The problem](#-the-problem)
+- [How it works, at a glance](#-how-it-works-at-a-glance)
+- [Installation](#-installation)
+- [Quick start](#-quick-start)
+- [The student profile](#-the-student-profile)
+- [Registering content](#-registering-content)
+- [The priority ranking](#-the-priority-ranking)
+- [Review and quiz](#-review-and-quiz)
+- [File format](#-file-format)
+- [Safety net](#-safety-net)
+- [Architecture](#-architecture)
+- [Privacy and security](#-privacy-and-security)
+- [Known limitations](#-known-limitations)
+- [License](#-license)
 
 ---
 
-## 🔭 Como funciona, em uma passada
+## 🎯 The problem
+
+Anyone studying several subjects at once piles up three problems that are not
+about content, but about organization.
+
+**The material gets scattered.** The lecture PDF is in `Downloads`, the video
+is a link lost in the browser history, the summary is in a notebook and the
+exercise list is in an e-mail. When it is time to review, half of the time goes
+into just gathering the pieces, and that friction is reason enough not to
+review at all.
+
+**Choosing what to review goes badly.** Left to their own devices, students
+review what feels comfortable: the subject they already understand, because
+reviewing it gives that nice feeling of doing well. The content they have not
+mastered is exactly what they avoid, and exactly what needs reviewing.
+
+**Forgetting gives no warning.** Retention drops silently. There is no "you
+forgot Recursion" notification; you only find out during the exam.
+
+Synapsis tackles all three. Each registered piece of content carries, in a
+single file, the summary, the paths to the materials, the video lesson links
+and a quiz the students wrote themselves while the subject was still fresh.
+And instead of showing that list alphabetically or by registration date, the
+program sorts it by a priority computed from three things: how well the student
+masters that subject, how long ago they saw it, and their overall profile as a
+student.
+
+In other words: the review queue is built by the program, not by the mood of
+the day.
+
+---
+
+## 🔭 How it works, at a glance
 
 ```
                          python synapsis.py
                                  │
-                      inicializar_programa()  ──► cria usuarios/ se não existir
+                      initialize_program()  ──► creates users/ if missing
                                  │
-                       mostrar_introducao()
+                            show_intro()
                                  │
-                              main()  ─── Menu Principal ───┐
+                              main()  ─── Main Menu ────────┐
                                  │                          │
                 ┌────────────────┴────────────────┐         │
                 ▼                                 ▼         │
-       processo_cadastro()               processo_login()   │
+            sign_up()                          login()      │
                 │                                 │         │
-     coeficiente_rendimento()             até 3 tentativas  │
-     5 perguntas ponderadas → CR                  │         │
+     performance_coefficient()           up to 3 attempts   │
+     5 weighted questions → CR                    │         │
                 │                                 │         │
-                └──► usuarios/<nome>/pessoal_<nome>.txt     │
+                └──► users/<name>/profile_<name>.txt        │
                                  │                          │
-                                 └──► menu_usuario(nome) ◄──┘
+                                 └──► user_menu(name) ◄─────┘
                                             │
-                                  contador_acessos()   ──► +1 no perfil
+                                    count_access()   ──► +1 in the profile
                                             │
-                                  obter_ranking_estudos()
+                                   get_study_ranking()
                                        │         │
-                              delta_time()   dificuldade gravada
+                              delta_time()   stored difficulty
                                        └────┬────┘
                                             ▼
-                              fila ordenada por prioridade
+                               queue sorted by priority
                                             │
          ┌──────────────────────────────────┼──────────────────────────────┐
          ▼                                  ▼                              ▼
- cadastrar_novo_conteudo()        revisar_conteudo()          listar_editar_deletar()
+  register_content()                 review_content()               manage_studies()
          │                                  │                              │
-  3 notas + quiz +              resumo, anexos, links            visualizar / editar
-  anexos + links                 e quiz corrigido                resumo / renomear /
-         │                                                            deletar
+  3 scores + quiz +              summary, attachments,          view / edit summary /
+  attachments + links            links and graded quiz            rename / delete
+         │
          ▼
- usuarios/<nome>/estudos/<Conteudo>.txt
+ users/<name>/studies/<Content>.txt
 ```
 
-Não há banco de dados, servidor nem rede. O estado inteiro do programa são
-arquivos `.txt` dentro de `usuarios/`.
+There is no database, server or network. The program's whole state is `.txt`
+files inside `users/`.
 
 ---
 
-## 📦 Instalação
+## 📦 Installation
 
-**Requisito único:** Python 3.6 ou superior. Nenhuma biblioteca externa — o
-programa usa só `os`, `time`, `datetime` e `ast`, todos da biblioteca padrão.
+**Single requirement:** Python 3.6 or newer. No external libraries: the
+program only uses `os`, `sys`, `time`, `datetime` and `ast`, all from the
+standard library.
 
 ```bash
 git clone https://github.com/gabrieldevcode/synapsis.git
@@ -129,21 +132,21 @@ cd synapsis
 python synapsis.py
 ```
 
-Em algumas distribuições Linux e no macOS o comando é `python3`:
+On some Linux distributions and on macOS the command is `python3`:
 
 ```bash
 python3 synapsis.py
 ```
 
-O programa cria a pasta `usuarios/` sozinho no primeiro acesso. Se ele não
-conseguir (permissão negada na pasta), avisa e encerra em vez de continuar num
-estado quebrado.
+The program creates the `users/` folder on its own on first run. If it cannot
+(permission denied on the folder), it warns you and exits instead of carrying
+on in a broken state.
 
-### Sobre o terminal
+### About the terminal
 
-A interface desenha molduras com o caractere `═` (U+2550). Terminais modernos
-(Windows Terminal, VS Code, GNOME Terminal, iTerm2) mostram isso sem ajuste. No
-`cmd.exe` antigo, se aparecerem caracteres estranhos no lugar das linhas:
+The interface draws frames with the `═` character (U+2550). Modern terminals
+(Windows Terminal, VS Code, GNOME Terminal, iTerm2) show it without any
+tweaks. On the old `cmd.exe`, if odd characters show up instead of the lines:
 
 ```bat
 chcp 65001
@@ -151,208 +154,210 @@ chcp 65001
 
 ---
 
-## 🚀 Uso rápido
+## 🚀 Quick start
 
-Um clone novo não tem nenhum estudante cadastrado, então o ranking abre vazio.
-Para ver o programa com conteúdo já dentro, gere um usuário de demonstração:
+A fresh clone has no registered students, so the ranking opens empty. To see
+the program with content already inside, generate a demo user:
 
 ```bash
-python exemplos/gerar_usuario_demo.py
+python examples/generate_demo_user.py
 ```
 
-Ele cria o estudante `demo` (senha `demo123`) com quatro matérias de Computação 1
-cadastradas em datas diferentes, para que o ranking tenha o que ordenar. Os
-dados são inventados.
+It creates the student `demo` (password `demo123`) with four Computer Science 1
+subjects registered on different dates, so the ranking has something to sort.
+The data is made up.
 
-Depois é só rodar o programa, escolher **1. Login** e entrar com `demo` /
+Then just run the program, choose **1. Login** and sign in with `demo` /
 `demo123`:
 
 ```
 ════════════════════════════════════════════════════════════
-                          Olá demo
+                          Hi demo
 ════════════════════════════════════════════════════════════
-                   Estudos Cadastrados: 4
-                         Acessos: 2
+                   Registered Studies: 4
+                        Accesses: 2
 ════════════════════════════════════════════════════════════
-Ranking de Prioridades:
-PRIORIDADE   | CONTEÚDO
+Priority Ranking:
+PRIORITY     | CONTENT
 ------------------------------------------------------------
-1            | Estruturas Condicionais
-2            | Laços de Repetição
-3            | Manipulação de Arquivos
-4            | Recursividade
+1            | Conditional Statements
+2            | Loops
+3            | File Handling
+4            | Recursion
 ════════════════════════════════════════════════════════════
-1. Cadastrar novo conteúdo
-2. Revisar Conteúdo
-3. Listar conteúdos (Visualizar / Editar / Deletar)
-4. Sair
+1. Register new content
+2. Review content
+3. List content (View / Edit / Delete)
+4. Log out
 ════════════════════════════════════════════════════════════
-Escolha:
+Choice:
 ```
 
-Para apagar a demonstração, basta remover a pasta: `rm -rf usuarios/demo`
-(ou `rmdir /s usuarios\demo` no `cmd.exe`).
+To remove the demo, just delete the folder: `rm -rf users/demo` (or
+`rmdir /s users\demo` on `cmd.exe`).
 
 ---
 
-## 📊 O perfil do estudante
+## 📊 The student profile
 
-No cadastro, antes de qualquer conteúdo, o programa aplica um questionário de
-cinco perguntas, todas em escala de 1 a 10. O resultado é o **coeficiente de
-rendimento (CR)** do estudante, gravado no perfil e usado depois no ranking.
+At sign-up, before any content, the program runs a five-question
+questionnaire, all on a scale from 1 to 10. The result is the student's
+**performance coefficient (CR)**, stored in the profile and used later by the
+ranking.
 
-Os pesos **não são iguais**, e essa é uma escolha de projeto, não um descuido:
+The weights are **not equal**, and that is a design choice, not an oversight:
 
-| # | O que a pergunta mede | Peso |
+| # | What the question measures | Weight |
 |---|---|---|
-| 1 | Constância na rotina, mesmo sem motivação | 0.10 |
-| 2 | Persistência diante de conteúdo complexo | 0.20 |
-| 3 | Uso de **métodos ativos** (exercícios, explicar em voz alta, resumir) | **0.30** |
-| 4 | Capacidade de **conectar teoria a aplicação prática** | **0.30** |
-| 5 | Proatividade para buscar respostas sozinho | 0.10 |
+| 1 | Keeping a routine, even without motivation | 0.10 |
+| 2 | Persistence when facing complex content | 0.20 |
+| 3 | Use of **active methods** (exercises, explaining out loud, summarizing) | **0.30** |
+| 4 | Ability to **connect theory to practical use** | **0.30** |
+| 5 | Proactivity in finding answers alone | 0.10 |
 
-As perguntas 3 e 4 pesam três vezes mais que a primeira porque são as que mais
-se correlacionam com retenção real. Estudo ativo fixa mais que leitura passiva, e
-quem consegue enxergar para que serve um conteúdo abstrato ancora ele em algo
-que não se apaga junto com a memória de curto prazo. Constância importa, mas
-constância aplicada a um método ruim rende pouco.
+Questions 3 and 4 weigh three times as much as the first one because they are
+the ones most correlated with real retention. Active study sticks better than
+passive reading, and whoever can see what an abstract topic is for anchors it
+to something that does not fade along with short-term memory. Consistency
+matters, but consistency applied to a poor method yields little.
 
 ```
 CR = p1×0.10 + p2×0.20 + p3×0.30 + p4×0.30 + p5×0.10
 ```
 
-Como os pesos somam 1.0, o CR fica sempre na mesma escala das respostas: de 1
-(baixa absorção) a 10 (excelente compreensão).
+Since the weights add up to 1.0, the CR always stays on the same scale as the
+answers: from 1 (low absorption) to 10 (excellent understanding).
 
 ---
 
-## ✍️ Cadastrando um conteúdo
+## ✍️ Registering content
 
-Ao cadastrar, o programa pede nome e resumo e faz três perguntas de 1 a 10:
+When registering, the program asks for a name and a summary and then three
+questions from 1 to 10:
 
-| Pergunta | Variável | Peso |
+| Question | Variable | Weight |
 |---|---|---|
-| "Se você precisasse dar uma aula sobre isso agora, quão bem você se sairia?" | domínio | 0.5 |
-| "O quanto esse assunto é fundamental para seus objetivos atuais?" | relevância | 0.3 |
-| "O quanto você realmente gosta de aprender sobre isso?" | engajamento | 0.2 |
+| "If you had to teach a class on this right now, how well would you do?" | mastery | 0.5 |
+| "How essential is this subject to your current goals?" | relevance | 0.3 |
+| "How much do you actually enjoy learning about this?" | engagement | 0.2 |
 
 ```
-dificuldade = domínio×0.5 + relevância×0.3 + engajamento×0.2
+difficulty = mastery×0.5 + relevance×0.3 + engagement×0.2
 ```
 
-Repare no sentido do número: **quanto maior, mais confortável você está com o
-assunto**. Um valor alto significa que você daria a aula, o tema é relevante e
-você gosta dele — logo, precisa de menos revisão. Um valor baixo é o sinal de
-alerta. O ranking usa isso diretamente.
+Note which way the number points: **the higher it is, the more comfortable you
+are with the subject**. A high value means you could teach the class, the topic
+is relevant and you enjoy it, so it needs less review. A low value is the
+warning sign. The ranking uses it directly.
 
-Em seguida, três laços opcionais, cada um repetindo enquanto você responder `S`:
+Then come three optional loops, each repeating while you answer `Y`:
 
-1. **Quiz** — pares de pergunta e resposta escritos por você, agora, enquanto o
-   assunto está fresco. É o material da revisão futura.
-2. **Arquivos locais** — caminhos de PDFs, slides, imagens. O programa guarda o
-   caminho, nunca copia o arquivo.
-3. **Videoaulas** — links.
+1. **Quiz**: question and answer pairs written by you, now, while the subject
+   is fresh. It is the material for future reviews.
+2. **Local files**: paths to PDFs, slides, images. The program stores the
+   path and never copies the file.
+3. **Video lessons**: links.
 
-Tudo vai para um único `.txt` dentro de `usuarios/<você>/estudos/`.
+Everything goes into a single `.txt` inside `users/<you>/studies/`.
 
 ---
 
-## 🏆 O ranking de prioridades
+## 🏆 The priority ranking
 
-É o núcleo do programa. Toda vez que a área do estudante é desenhada, o Synapsis
-lê todos os conteúdos cadastrados, calcula uma prioridade para cada um e ordena.
+This is the core of the program. Every time the student area is drawn, Synapsis
+reads all registered content, computes a priority for each one and sorts them.
 
-Para cada conteúdo, `delta_time()` converte a data de cadastro em horas
-decorridas, e então:
+For each piece of content, `delta_time()` turns the registration date into
+elapsed hours, and then:
 
 ```
-prioridade = CR×0.2 + dificuldade×0.5 + horas_decorridas×0.5
+priority = CR×0.2 + difficulty×0.5 + elapsed_hours×0.5
 ```
 
-A lista é ordenada de forma **crescente**, e a posição 1 é a primeira a revisar.
-Como a `dificuldade` cresce com o seu domínio, o conteúdo em que você se sai pior
-produz o menor score e sobe para o topo da fila — que é exatamente o
-comportamento desejado, e o que o teste
-`test_menor_dominio_aparece_primeiro` trava.
+The list is sorted in **ascending** order, and position 1 is the first one to
+review. Since `difficulty` grows with your mastery, the content you do worst at
+produces the lowest score and rises to the top of the queue, which is exactly
+the desired behavior.
 
-O CR entra com peso 0.2 e é o mesmo para todos os conteúdos do estudante, então
-ele desloca todos os scores juntos sem nunca mudar a ordem entre eles. Ele existe
-para calibrar a escala do estudante, não para reordenar a fila.
+The CR has weight 0.2 and is the same for all of a student's content, so it
+shifts every score together without ever changing their order. It exists to
+calibrate the student's scale, not to reorder the queue.
 
-### As faixas temporais
+### The time bands
 
-O programa também classifica o tempo decorrido em sete faixas, com um valor
-associado a cada uma:
+The program also classifies the elapsed time into seven bands, each with an
+associated value:
 
-| Tempo desde o cadastro | Valor da faixa |
+| Time since registration | Band value |
 |---|---|
-| menos de 4 h | 10.0 |
-| 4 h a 12 h | 9.2 |
-| 12 h a 24 h | 8.0 |
-| 24 h a 48 h | 7.0 |
-| 48 h a 96 h | 5.5 |
-| 96 h a 240 h | 2.0 |
-| mais de 240 h (10 dias) | 0.5 |
+| less than 4 h | 10.0 |
+| 4 h to 12 h | 9.2 |
+| 12 h to 24 h | 8.0 |
+| 24 h to 48 h | 7.0 |
+| 48 h to 96 h | 5.5 |
+| 96 h to 240 h | 2.0 |
+| more than 240 h (10 days) | 0.5 |
 
-O desenho é o de uma curva de esquecimento: o valor cai rápido nas primeiras
-horas e desaba depois de dez dias. **Essas faixas estão calculadas mas ainda não
-entram no cálculo do score** — hoje quem entra na fórmula é o número bruto de
-horas. Está descrito em [Limites conhecidos](#-limites-conhecidos), junto com a
-consequência prática disso.
-
----
-
-## 🔁 A revisão e o quiz
-
-A opção **2. Revisar Conteúdo** abre um conteúdo, mostra o resumo e reúne os
-materiais num lugar só:
-
-```
-             Revisando: Estruturas_Condicionais
-════════════════════════════════════════════════════════════
-Resumo:
-if/elif/else, operadores de comparacao e encadeamento de condicoes. Cuidado
-com o uso de = no lugar de == dentro do if.
-
-Voce pode copiar os caminhos relativos abaixo, colocar em seu explorador de
-arquivos e visualizar conteudos da matéria
-Arquivos anexados:
- - materiais/computacao1/aula03_condicionais.pdf
-Vídeos relacionados ao conteudo:
- - https://exemplo.invalido/aula-condicionais
-════════════════════════════════════════════════════════════
-```
-
-Depois vem o quiz que você mesmo escreveu no cadastro, corrigido pergunta a
-pergunta:
-
-```
-                      Quiz de Revisão
-════════════════════════════════════════════════════════════
-Pergunta 1: Qual operador compara igualdade em Python?
-Resposta: ==
-Correto!
-════════════════════════════════════════════════════════════
-Pergunta 2: O bloco else e obrigatorio depois de um if?
-Resposta: sim
-Errado. Resposta correta: nao
-════════════════════════════════════════════════════════════
-Você acertou 1 de 2 (50.0%).
-```
-
-A comparação ignora maiúsculas/minúsculas e espaços nas pontas, mas exige o
-texto certo — não há tolerância a sinônimos.
+The shape is that of a forgetting curve: the value drops fast in the first
+hours and collapses after ten days. **These bands are computed but do not yet
+feed into the score**: today the formula uses the raw number of hours. This is
+described in [Known limitations](#-known-limitations), along with its practical
+consequence.
 
 ---
 
-## 📄 Formato dos arquivos
+## 🔁 Review and quiz
 
-Todo o estado do programa é texto legível. Dá para abrir, ler e corrigir com
-qualquer editor.
+Option **2. Review content** opens a piece of content, shows the summary and
+gathers the materials in one place:
 
-### `usuarios/<nome>/pessoal_<nome>.txt`
+```
+              Reviewing: Conditional_Statements
+════════════════════════════════════════════════════════════
+Summary:
+if/elif/else, comparison operators and chaining conditions. Watch out for
+using = instead of == inside an if.
 
-Quatro linhas, sempre nesta ordem, lidas por índice:
+You can copy the relative paths below into your file explorer to open the
+subject materials
+Attached files:
+ - materials/cs1/lecture03_conditionals.pdf
+Videos related to this content:
+ - https://example.invalid/lesson-conditionals
+════════════════════════════════════════════════════════════
+```
+
+Then comes the quiz you wrote yourself when registering, graded question by
+question:
+
+```
+                        Review Quiz
+════════════════════════════════════════════════════════════
+Question 1: Which operator compares equality in Python?
+Answer: ==
+✔ Correct!
+════════════════════════════════════════════════════════════
+Question 2: Is the else block required after an if?
+Answer: yes
+✘ Wrong. Correct answer: no
+════════════════════════════════════════════════════════════
+Score [████████████████████░░░░░░░░░░░░░░░░░░░░] 50.0%
+You got 1 out of 2 right (50.0%).
+```
+
+The comparison ignores upper/lower case and surrounding spaces, but requires
+the right text: there is no tolerance for synonyms.
+
+---
+
+## 📄 File format
+
+The program's whole state is readable text. You can open, read and fix it with
+any editor.
+
+### `users/<name>/profile_<name>.txt`
+
+Four lines, always in this order, read by index:
 
 ```
 demo
@@ -361,206 +366,190 @@ demo123
 2
 ```
 
-| Linha | Conteúdo |
+| Line | Content |
 |---|---|
-| 1 | nome de usuário |
-| 2 | senha (texto puro — veja [Limites conhecidos](#-limites-conhecidos)) |
-| 3 | coeficiente de rendimento, 3 casas decimais |
-| 4 | total de acessos à área do estudante |
+| 1 | username |
+| 2 | password (plain text, see [Known limitations](#-known-limitations)) |
+| 3 | performance coefficient, 3 decimal places |
+| 4 | total visits to the student area |
 
-### `usuarios/<nome>/estudos/<Conteudo>.txt`
+### `users/<name>/studies/<Content>.txt`
 
-Cabeçalho de quatro linhas fixas, seguido de três seções nomeadas e separadas
-por uma linha de hífens. Cada seção tem tamanho variável:
+A four-line fixed header, followed by three named sections separated by a line
+of hyphens. Each section has a variable length:
 
 ```
-Conteudo: Estruturas Condicionais
-Dificuldade: 8.4
-Data de Inclusao: 27/08/2026 13:51
-Resumo: if/elif/else, operadores de comparacao e encadeamento de condicoes.
+Content: Conditional Statements
+Difficulty: 8.4
+Date Added: 27/08/2026 13:51
+Summary: if/elif/else, comparison operators and chaining conditions.
 --------------------
 QUIZ:
-['Qual operador compara igualdade em Python?', '==']
-['O bloco else e obrigatorio depois de um if?', 'nao']
+['Which operator compares equality in Python?', '==']
+['Is the else block required after an if?', 'no']
 --------------------
-ARQUIVOS:
-materiais/computacao1/aula03_condicionais.pdf
+FILES:
+materials/cs1/lecture03_conditionals.pdf
 --------------------
-VIDEO-AULAS:
-https://exemplo.invalido/aula-condicionais
+VIDEO LESSONS:
+https://example.invalid/lesson-conditionals
 ```
 
-A data segue `%d/%m/%Y %H:%M` — é o formato que `delta_time()` espera, e alterar
-isso à mão quebra o ranking daquele conteúdo. Cada linha do quiz é a
-representação Python de uma lista `[pergunta, resposta]`, relida com
-`ast.literal_eval` (veja [Arquitetura](#-arquitetura)).
+The date follows `%d/%m/%Y %H:%M` (day first). That is the format
+`delta_time()` expects, and changing it by hand breaks the ranking for that
+content. Each quiz line is the Python representation of a `[question, answer]`
+list, read back with `ast.literal_eval` (see [Architecture](#-architecture)).
 
 ---
 
-## 🛡️ Rede de segurança
+## 🛡️ Safety net
 
-O que o programa valida e recusa, em vez de aceitar e quebrar depois:
+What the program validates and rejects, instead of accepting it and breaking
+later:
 
-| Situação | O que acontece |
+| Situation | What happens |
 |---|---|
-| Nota fora da escala de 1 a 10 | Repergunta até receber um valor válido |
-| Texto onde se espera um número | Repergunta, sem estourar exceção |
-| Senha vazia no cadastro | Recusa e volta ao menu |
-| Nome de usuário já existente | Recusa e sugere login |
-| Login com usuário inexistente | Avisa e volta ao menu |
-| Senha errada | Até 3 tentativas, depois volta ao menu |
-| Opção de menu inválida | Avisa e redesenha o menu |
-| Resposta que não seja `S` ou `N` | Repergunta |
-| Escolher item fora da lista | Avisa e volta |
-| Deletar um conteúdo | Exige digitar `SIM`, em maiúsculas, por extenso |
-| Arquivo de perfil ausente ou corrompido | Mensagem de erro, sem derrubar o programa |
-| Linha de quiz malformada no `.txt` | É ignorada; a revisão continua |
-| Sem permissão para criar `usuarios/` | Avisa e encerra, em vez de seguir quebrado |
+| Score outside the 1 to 10 scale | Asks again until it gets a valid value |
+| Text where a number is expected | Asks again, without raising an exception |
+| Empty password at sign-up | Refuses and goes back to the menu |
+| Username already taken | Refuses and suggests logging in |
+| Login with a user that does not exist | Warns and goes back to the menu |
+| Wrong password | Up to 3 attempts, then back to the menu |
+| Invalid menu option | Warns and redraws the menu |
+| Answer other than `Y` or `N` | Asks again |
+| Picking an item outside the list | Warns and goes back |
+| Deleting content | Requires typing `YES`, in capitals, in full |
+| Missing or corrupted profile file | Error message, without crashing the program |
+| Malformed quiz line in the `.txt` | Ignored; the review carries on |
+| No permission to create `users/` | Warns and exits, instead of carrying on broken |
 
 ---
 
-## 🏗️ Arquitetura
+## 🏗️ Architecture
 
-Um único módulo, `synapsis.py`, organizado em blocos por responsabilidade.
+A single module, `synapsis.py`, organized in blocks by responsibility.
 
-| Função | Papel |
+| Function | Role |
 |---|---|
-| `limpar_terminal`, `linha`, `cabecalho`, `delay_texto`, `enter_para_pular` | Camada de apresentação: tudo que desenha na tela passa por aqui |
-| `inicializar_programa` | Garante a pasta `usuarios/` antes de qualquer coisa |
-| `mostrar_introducao` | Tela de abertura |
-| `obter_resposta_verificada` | Porta de entrada única para toda nota de 1 a 10 |
-| `coeficiente_rendimento` | Aplica o questionário e devolve o CR |
-| `processo_cadastro` / `processo_login` | Criam e autenticam o estudante |
-| `contador_acessos` | Incrementa e persiste o total de acessos |
-| `delta_time` | Converte data de cadastro em horas decorridas |
-| `cadastrar_novo_conteudo` | Coleta notas, quiz, anexos e links; grava o `.txt` |
-| `obter_ranking_estudos` | Lê todos os conteúdos e devolve a fila ordenada |
-| `revisar_conteudo` | Faz o parse do `.txt`, exibe o material e aplica o quiz |
-| `listar_editar_deletar` | Visualizar, editar resumo, renomear e apagar |
-| `menu_usuario` | Área do estudante: junta ranking e menu |
-| `main` | Menu principal e laço da aplicação |
+| `clear_terminal`, `line`, `header`, `typewriter`, `press_enter` | Presentation layer: everything drawn on screen goes through here |
+| `initialize_program` | Makes sure `users/` exists before anything else |
+| `show_intro` | Opening screen |
+| `get_validated_answer` | Single entry point for every 1 to 10 score |
+| `performance_coefficient` | Runs the questionnaire and returns the CR |
+| `sign_up` / `login` | Create and authenticate the student |
+| `count_access` | Increments and persists the total number of visits |
+| `delta_time` | Turns the registration date into elapsed hours |
+| `register_content` | Collects scores, quiz, attachments and links; writes the `.txt` |
+| `get_study_ranking` | Reads all content and returns the sorted queue |
+| `review_content` | Parses the `.txt`, shows the material and runs the quiz |
+| `manage_studies` | View, edit summary, rename and delete |
+| `user_menu` | Student area: brings ranking and menu together |
+| `main` | Main menu and application loop |
 
-### Decisões de projeto
+### Design decisions
 
-**Persistência em texto puro, sem banco e sem dependências.** A pasta é o banco:
-cada estudante é um diretório, cada conteúdo é um arquivo. Isso custa
-concorrência, índice e consulta — não dá para perguntar "todos os conteúdos com
-dificuldade abaixo de 4" sem varrer tudo, e é por isso que `obter_ranking_estudos`
-relê a pasta inteira a cada desenho de tela. Em troca, o programa roda em
-qualquer máquina com Python e nada mais, o estado inteiro é inspecionável com um
-editor de texto, e um arquivo corrompido derruba um conteúdo em vez do sistema.
-Para o volume real de um estudante — dezenas de conteúdos, não milhões — a
-varredura completa é irrelevante e a legibilidade vale mais.
+**Plain-text persistence, no database and no dependencies.** The folder is the
+database: each student is a directory, each piece of content is a file. That
+costs concurrency, indexing and querying: you cannot ask for "all content with
+difficulty below 4" without scanning everything, which is why
+`get_study_ranking` rereads the whole folder on every screen draw. In return,
+the program runs on any machine with Python and nothing else, the whole state
+can be inspected with a text editor, and a corrupted file takes down one piece
+of content instead of the whole system. For a real student's volume (dozens of
+entries, not millions) the full scan is irrelevant and readability is worth
+more.
 
-**`ast.literal_eval` em vez de `eval` para reler o quiz.** O quiz é gravado como
-a representação Python de uma lista e precisa voltar a ser lista na leitura.
-`eval` faria isso em uma linha — e executaria como código qualquer coisa que
-estivesse naquele arquivo. Como o formato é texto puro que o próprio README
-convida a editar, isso seria transformar uma anotação de estudo em vetor de
-execução. `literal_eval` só aceita literais: uma linha adulterada vira erro, não
-comando. E o erro é capturado, então a linha é descartada e a revisão segue.
+**`ast.literal_eval` instead of `eval` to read the quiz back.** The quiz is
+written as the Python representation of a list and has to become a list again
+when read. `eval` would do it in one line, and would also run as code whatever
+was in that file. Since the format is plain text that this very README invites
+you to edit, that would turn a study note into an execution vector.
+`literal_eval` only accepts literals: a tampered line becomes an error, not a
+command. And the error is caught, so the line is discarded and the review moves
+on.
 
-**O parser da revisão é uma máquina de estados por seção.** As três seções
-(`QUIZ:`, `ARQUIVOS:`, `VIDEO-AULAS:`) têm tamanho variável, então ler por número
-de linha quebraria assim que alguém adicionasse uma pergunta. `revisar_conteudo`
-percorre o arquivo mantendo o registro de qual seção está aberta, e cada linha é
-interpretada conforme esse contexto. Linhas de separador são puladas e linhas
-que não encaixam são ignoradas em silêncio — o arquivo é editável à mão, então o
-parser é tolerante por necessidade, não por descuido.
+**The review parser is a per-section state machine.** The three sections
+(`QUIZ:`, `FILES:`, `VIDEO LESSONS:`) have variable length, so reading by line
+number would break as soon as someone added a question. `review_content` walks
+the file keeping track of which section is open, and each line is interpreted
+according to that context. Separator lines are skipped and lines that do not
+fit are silently ignored: the file is editable by hand, so the parser is
+tolerant by necessity, not by carelessness.
 
-**Anexos são referências, nunca cópias.** O programa guarda o caminho do PDF ou
-do slide, e nunca copia, move ou abre o arquivo. O estudante continua dono da
-organização das próprias pastas, o Synapsis não duplica gigabytes de material, e
-não existe caminho de código em que ele possa corromper um arquivo que não seja
-dele. O preço é que mover o material quebra a referência — um preço aceitável
-diante da alternativa de um programa de estudos mexendo nos seus arquivos.
-
----
-
-## 🔒 Privacidade e segurança
-
-A pasta `usuarios/` está no `.gitignore` e nunca deve ser versionada. Ela contém
-nome, senha e todo o material de estudo de cada pessoa cadastrada.
-
-**As senhas são gravadas em texto puro.** Isto é um projeto acadêmico de
-Computação 1, e armazenamento seguro de credenciais (hash com sal, algo como
-`bcrypt` ou `argon2`) está fora do escopo da disciplina. A consequência prática é
-direta: **não use aqui uma senha que você use em qualquer outro lugar.** Qualquer
-pessoa com acesso à pasta lê a senha abrindo um `.txt`.
-
-Pelo mesmo motivo, o login serve para separar perfis num computador compartilhado
-— não é um controle de acesso. Não há criptografia, e apagar a pasta do usuário
-apaga tudo dele.
+**Attachments are references, never copies.** The program stores the path to
+the PDF or slide deck, and never copies, moves or opens the file. Students stay
+in charge of organizing their own folders, Synapsis does not duplicate gigabytes
+of material, and there is no code path where it could corrupt a file that is
+not its own. The price is that moving the material breaks the reference, an
+acceptable price compared to a study program messing with your files.
 
 ---
 
-## 🧪 Testes
+## 🔒 Privacy and security
 
-A suíte cobre as regras que quebram em silêncio: cálculo de tempo decorrido,
-montagem e ordenação do ranking, contagem de acessos, validação das notas e o
-formato de ida e volta do arquivo de estudo.
+The `users/` folder is in `.gitignore` and must never be versioned. It holds
+the name, password and all study material of every registered person.
 
-```bash
-python -m unittest discover -s tests -v
-```
+**Passwords are stored in plain text.** This is an academic Computer Science 1
+project, and secure credential storage (salted hashing, something like `bcrypt`
+or `argon2`) is outside the course scope. The practical consequence is
+straightforward: **do not use a password here that you use anywhere else.**
+Anyone with access to the folder can read the password by opening a `.txt`.
 
-```
-Ran 19 tests in 0.397s
-
-OK
-```
-
-Todo teste roda dentro de um diretório temporário — a suíte **não toca a pasta
-`usuarios/` real** e não acessa a rede. Como o Synapsis resolve os caminhos a
-partir do diretório de trabalho, cada caso faz `chdir` para um `tempdir` no
-`setUp` e volta no `tearDown`.
-
-Para testar o programa à mão sem sujar seus dados, use o usuário `demo` do
-gerador de exemplo e apague a pasta depois.
+For the same reason, login exists to separate profiles on a shared computer:
+it is not access control. There is no encryption, and deleting a user's folder
+deletes everything they had.
 
 ---
 
-## ⚠️ Limites conhecidos
+## ⚠️ Known limitations
 
-**Senha em texto puro.** Descrito em
-[Privacidade e segurança](#-privacidade-e-segurança). É a limitação mais séria e
-a única com consequência fora do programa.
+**Plain-text password.** Described in
+[Privacy and security](#-privacy-and-security). It is the most serious
+limitation and the only one with consequences outside the program.
 
-**As faixas temporais não entram no score.** `obter_ranking_estudos` calcula a
-faixa de tempo (a tabela em [O ranking](#-o-ranking-de-prioridades)) mas usa o
-número bruto de horas na fórmula. Como esse termo cresce sem limite, um conteúdo
-cadastrado há 15 dias soma `360×0.5 = 180` pontos e vai parar no fim da fila —
-quando deveria estar no começo, que é exatamente para o que as faixas foram
-desenhadas. Na prática, hoje o ranking prioriza bem por domínio e mal por tempo.
-Trocar `horas_decorridas` pelo valor da faixa na fórmula é a correção.
+**The time bands do not feed into the score.** `get_study_ranking` computes the
+time band (the table in [The ranking](#-the-priority-ranking)) but uses the raw
+number of hours in the formula. Since that term grows without bound, content
+registered 15 days ago adds `360×0.5 = 180` points and ends up at the bottom
+of the queue, when it should be at the top, which is exactly what the bands
+were designed for. In practice, today the ranking prioritizes well by mastery
+and poorly by time. Replacing `elapsed_hours` with the band value in the
+formula is the fix.
 
-**Renomear um conteúdo não atualiza o nome interno.** A opção 3 renomeia o
-arquivo, mas a linha `Conteudo:` dentro dele continua com o nome antigo. O
-resultado é que a listagem mostra o nome novo e o ranking continua mostrando o
-antigo. Corrigir o texto da primeira linha do `.txt` resolve.
+**Renaming content does not update its internal name.** Option 3 renames the
+file, but the `Content:` line inside it keeps the old name. The result is that
+the listing shows the new name and the ranking keeps showing the old one.
+Fixing the first line of the `.txt` solves it.
 
-**Nomes de conteúdo viram nomes de arquivo.** Espaços viram `_`, mas caracteres
-que o sistema operacional proíbe (`\ / : * ? " < > |`) fazem a gravação falhar
-com uma mensagem de erro. Cadastrar dois conteúdos com o mesmo nome sobrescreve
-o primeiro, sem aviso.
+**Content names become file names.** Spaces become `_`, but characters the
+operating system forbids (`\ / : * ? " < > |`) make saving fail with an error
+message. Registering two pieces of content with the same name overwrites the
+first one, without warning.
 
-**O encoding não é declarado.** Leitura e escrita usam o padrão da plataforma
-(cp1252 no Windows, UTF-8 na maioria dos Linux). Uma pasta `usuarios/` criada no
-Windows e lida no Linux embaralha os acentos, e rodar com `PYTHONUTF8=1` sobre
-dados antigos causa `UnicodeDecodeError`. Passar `encoding='utf-8'` em todos os
-`open()` resolveria, ao custo de migrar os arquivos já existentes.
+**The encoding is not declared.** Reading and writing use the platform default
+(cp1252 on Windows, UTF-8 on most Linux systems). A `users/` folder created on
+Windows and read on Linux garbles accented characters, and running with
+`PYTHONUTF8=1` over old data causes a `UnicodeDecodeError`. Passing
+`encoding='utf-8'` to every `open()` would solve it, at the cost of migrating
+existing files.
 
-**O score é calculado mas não é exibido.** A tela mostra só a posição na fila,
-não o valor da prioridade.
+**The score is computed but not displayed.** The screen only shows the position
+in the queue, not the priority value.
 
-**O quiz não pode ser editado depois de criado.** A opção 3 do menu permite
-alterar resumo e nome; para mudar uma pergunta é preciso editar o `.txt` à mão.
+**The quiz cannot be edited after it is created.** Option 3 of the menu lets
+you change the summary and the name; to change a question you have to edit the
+`.txt` by hand.
 
-**Não há exclusão de usuário pelo programa.** Apagar a pasta do estudante é a
-única forma.
+**There is no way to delete a user from the program.** Deleting the student's
+folder is the only way.
+
+**Data from the Portuguese version is not read.** Earlier versions stored data
+in `usuarios/` with Portuguese field names. The current version only reads
+`users/`; register again or regenerate the demo user.
 
 ---
 
-## 📜 Licença
+## 📜 License
 
-[MIT](LICENSE) — Gabriel Robalinho.
+[MIT](LICENSE) © Gabriel Robalinho.

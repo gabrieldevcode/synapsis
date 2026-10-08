@@ -1,7 +1,11 @@
-# ─── Dados dos usuários ──────────────────────────────────────────────────────
-# Cada pasta em usuarios/ contém o arquivo pessoal do estudante (nome, senha e
-# coeficiente) e todos os conteúdos que ele cadastrou. Nada disso pode ser
-# versionado: é dado pessoal, e a senha está em texto puro.
+# ─── User data ───────────────────────────────────────────────────────────────
+# Each folder in users/ holds the student's profile file (name, password and
+# coefficient) and every piece of content they registered. None of it may be
+# versioned: it is personal data, and the password is stored in plain text.
+users/
+
+# Legacy data folder from the Portuguese version of the program. Kept ignored
+# so old local data can never be committed by accident.
 usuarios/
 
 # ─── Python ──────────────────────────────────────────────────────────────────
@@ -13,20 +17,20 @@ build/
 dist/
 *.egg-info/
 
-# Ambientes virtuais
+# Virtual environments
 .venv/
 venv/
 env/
 ENV/
 
-# ─── Ferramentas e editores ──────────────────────────────────────────────────
+# ─── Tools and editors ───────────────────────────────────────────────────────
 .pytest_cache/
 .mypy_cache/
 .vscode/
 .idea/
 *.swp
 
-# ─── Sistema operacional ─────────────────────────────────────────────────────
+# ─── Operating system ────────────────────────────────────────────────────────
 Thumbs.db
 desktop.ini
 .DS_Store

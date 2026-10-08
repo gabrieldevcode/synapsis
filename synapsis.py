@@ -170,6 +170,18 @@ def show_logo():
     synapse_pulse()
 
 
+def say_goodbye():
+    clear_terminal()
+    print()
+    line()
+    typewriter("Thank you for using Synapsis.".center(60), 0.03)
+    typewriter("See you soon!".center(60), 0.03)
+    line()
+    print()
+    synapse_pulse()
+    print()
+
+
 
 
 
@@ -1114,9 +1126,7 @@ def main():
         elif choice == "2":
             sign_up()
         elif choice == "3":
-            clear_terminal()
-            print("Thank you for using the Study Manager.")
-            print("See you soon!")
+            say_goodbye()
             break
         else:
             print("\nInvalid option. Please try again.")

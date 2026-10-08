@@ -39,38 +39,38 @@ def press_enter():
 
 
 
-# INTRODUÇÃO
+# INTRODUCTION
 
-# Utilizada para criar a pasta dos usuarios ao inicializar o programa
-def inicializar_programa():
+# Creates the users folder when the program starts
+def initialize_program():
 
-    pasta_usuarios = 'users'
+    users_folder = 'users'
 
-    if not os.path.exists(pasta_usuarios): # Verifica se existe, se não cria
+    if not os.path.exists(users_folder): # Checks whether it exists, creates it if not
         try:
-            os.makedirs(pasta_usuarios) # cria
-        except OSError as e: # possivel bloqueio da maquina
-            print(f"Erro crítico ao criar diretório '{pasta_usuarios}': {e}")
-            print("Por favor, verifique as permissões da pasta e tente novamente.")
+            os.makedirs(users_folder) # create
+        except OSError as e: # the machine may be blocking it
+            print(f"Critical error while creating directory '{users_folder}': {e}")
+            print("Please check the folder permissions and try again.")
             exit()
 
 
 
 
 
-# Explicacao breve da aplicacao 
-def mostrar_introducao():
+# Short explanation of the application
+def show_intro():
 
-    header("Bem-vindo ao SYNAPSIS")
+    header("Welcome to SYNAPSIS")
 
     msg = ("""
-    Nossa missão é transformar a revisão de conteúdos
-    em uma rotina intuitiva, eficaz e inteligente.
-           
-    O Synapsis usa repetição espaçada para agendar
-    automaticamente as suas revisões no momento ideal.
+    Our mission is to turn reviewing what you study
+    into an intuitive, effective and smart routine.
 
-    Vamos combater a desorganização juntos.
+    Synapsis uses spaced repetition to automatically
+    schedule your reviews at the right moment.
+
+    Let's beat disorganization together.
     """)
     
     typewriter(msg)
@@ -929,8 +929,8 @@ def menu_usuario(nome_usuario):
 
 def main():
 
-    inicializar_programa()
-    mostrar_introducao()
+    initialize_program()
+    show_intro()
     habilitado = ''
     while habilitado != True:
         header("Menu Principal")

@@ -495,66 +495,66 @@ def register_content(username):
 
 
 
-# Por meio do algoritmo de definição de prioridade calculada, se define ordena uma lista para fazer as revisões
-def obter_ranking_estudos(nome_usuario, qualidade_aluno):
+# Uses the computed-priority algorithm to build the sorted list of reviews
+def get_study_ranking(username, student_quality):
 
-    pasta_estudos = os.path.join('users', nome_usuario, 'studies')
-    # Busca todos os estudos do usuario
+    studies_folder = os.path.join('users', username, 'studies')
+    # Fetches all of the user's studies
     try:
-        arquivos = []
-        lista_completa = os.listdir(pasta_estudos)
+        files = []
+        full_list = os.listdir(studies_folder)
 
-        for arquivo in lista_completa:
-            arquivos.append(arquivo)
+        for file in full_list:
+            files.append(file)
 
     except Exception:
         return []
 
 
-    # Extraindo dados do arquivo de estudo específico
-    lista_rankeada = []
-    for estudo in arquivos:
-        caminho_completo_estudo = os.path.join(pasta_estudos, estudo)
-        
-        with open(caminho_completo_estudo, 'r') as f:
-            dados = f.readlines()
-            nome_conteudo = dados[0].strip().replace("Content: ", "")
-            dificuldade_atribuida_usuario = float(dados[1].strip().replace("Difficulty: ", ""))
+    # Extracting data from each study file
+    ranked_list = []
+    for study in files:
+        study_full_path = os.path.join(studies_folder, study)
 
-            data_inclusao = dados[2].strip().replace('Date Added: ', '')
-            dia_hora = data_inclusao.split(' ')
-            dia = dia_hora[0]
-            hora = dia_hora[1]
+        with open(study_full_path, 'r') as f:
+            data = f.readlines()
+            content_name = data[0].strip().replace("Content: ", "")
+            user_assigned_difficulty = float(data[1].strip().replace("Difficulty: ", ""))
 
-            tempo_decorrido = delta_time(dia, hora) # função para diferença de tempo
+            date_added = data[2].strip().replace('Date Added: ', '')
+            day_hour = date_added.split(' ')
+            day = day_hour[0]
+            hour = day_hour[1]
 
-            # Para um melhor calculo de prioridades, defini algumas faixas temporais para identificar se falta pouco, médio ou muito tempo
-            if tempo_decorrido < 4:
-                vt = 10.0
-            elif 4 <= tempo_decorrido < 12:
-                vt = 9.2
-            elif 12 <= tempo_decorrido < 24:
-                vt = 8.0
-            elif 24 <= tempo_decorrido < 48:
-                vt = 7.0 
-            elif 48 <= tempo_decorrido < 96:
-                vt = 5.5
-            elif 96 <= tempo_decorrido < 240:
-                vt = 2.0
+            elapsed_time = delta_time(day, hour) # time difference function
+
+            # For a better priority calculation, I defined a few time bands to tell whether little, some or a lot of time has passed
+            if elapsed_time < 4:
+                tv = 10.0
+            elif 4 <= elapsed_time < 12:
+                tv = 9.2
+            elif 12 <= elapsed_time < 24:
+                tv = 8.0
+            elif 24 <= elapsed_time < 48:
+                tv = 7.0
+            elif 48 <= elapsed_time < 96:
+                tv = 5.5
+            elif 96 <= elapsed_time < 240:
+                tv = 2.0
             else:
-                vt = 0.5
-                                
-            
-            # Quanto maior o resultado menor a nescessidade de rever o conteudo
-            prioridade_calculada = qualidade_aluno* 0.2 + dificuldade_atribuida_usuario * 0.5 + tempo_decorrido *0.5
+                tv = 0.5
 
-            # Adiciona a lista
-            lista_rankeada.append([prioridade_calculada, nome_conteudo]) 
-    
 
-    lista_rankeada.sort(key=lambda x: x[0])
+            # The higher the result, the lower the need to review the content
+            computed_priority = student_quality* 0.2 + user_assigned_difficulty * 0.5 + elapsed_time *0.5
 
-    return lista_rankeada
+            # Adds it to the list
+            ranked_list.append([computed_priority, content_name])
+
+
+    ranked_list.sort(key=lambda x: x[0])
+
+    return ranked_list
 
 
 
@@ -872,7 +872,7 @@ def menu_usuario(nome_usuario):
                 qtd_estudos = qtd_estudos + 1
 
 
-        ranking = obter_ranking_estudos(nome_usuario, qualidade_aluno)
+        ranking = get_study_ranking(nome_usuario, qualidade_aluno)
         
         header(f"Olá {nome_usuario}")
         print(f"Estudos Cadastrados: {qtd_estudos}".center(60))

@@ -82,54 +82,54 @@ def show_intro():
 
 
 
-# verifica as respostas dos futuros questionários
-def obter_resposta_verificada(pergunta):
+# validates the answers of the questionnaires that follow
+def get_validated_answer(question):
     while True:
         try:
-            print(pergunta)
-            resposta = float(input('→ '))
-            if 1 <= resposta <= 10: # define os limites
-                return resposta
+            print(question)
+            answer = float(input('→ '))
+            if 1 <= answer <= 10: # sets the limits
+                return answer
             else:
-                print('Digite um valor entre 1 e 10\n')
-                
+                print('Enter a value between 1 and 10\n')
+
         except:
-            print("Entrada Invalida, digite apenas numeros de 1 a 10\n")
+            print("Invalid input, type only numbers from 1 to 10\n")
 
 
 
 
 
 
-# Define a qualidade como aluno do usuário
-def coeficiente_rendimento():
+# Defines the user's quality as a student
+def performance_coefficient():
 
-    header("Definindo o seu Ritmo")
+    header("Finding Your Pace")
     print()
 
 
-    typewriter("As seguintes perguntas tem por objetivo personalizar a sua \n" \
-    "experiencia no Synapsis " \
-    "e melhorar seu desempenho no estudo  \n" \
-    "por repetições espaçadas", 0.01)
+    typewriter("The following questions are meant to personalize your \n" \
+    "experience in Synapsis " \
+    "and improve how you study  \n" \
+    "with spaced repetition", 0.01)
 
     print()
     time.sleep(0.5)
 
-    typewriter("As perguntas são pessoais e não tem por objetivo constranger,\n" \
-    "e sim ajudar no seu próprio desenvolvimento!", 0.01)
+    typewriter("The questions are personal and are not meant to embarrass you,\n" \
+    "but to help your own growth!", 0.01)
 
     print()
     time.sleep(0.5)
     line()
 
     print('''
-Responda todas as perguntas em uma escala de 1 a 10, sendo:
-          
-1: Não me identifico nem um pouco / Sou muito fraco nisso.
+Answer every question on a scale from 1 to 10, where:
 
-10: Me identifico completamente / Sou excelente nisso.
-                 
+1: I don't relate to this at all / I'm very weak at this.
+
+10: I relate to this completely / I'm excellent at this.
+
 ''')
     line()
     press_enter()
@@ -140,44 +140,44 @@ Responda todas as perguntas em uma escala de 1 a 10, sendo:
 
     print(
         '''
-1: Não me identifico nem um pouco / Sou muito fraco nisso.
+1: I don't relate to this at all / I'm very weak at this.
 
-10: Me identifico completamente / Sou excelente nisso.
+10: I relate to this completely / I'm excellent at this.
 '''
     )
     print()
 
-# ESPAÇO PARA PERGUNTAS
-    
+# QUESTIONS
 
-    p1 = obter_resposta_verificada("Em uma escala de 1 a 10, o quanto você consegue manter uma rotina de estudos diária, \nmesmo naqueles dias em que você não sente nenhuma motivação para estudar?")
-    p2 = obter_resposta_verificada("De 1 a 10, qual é o seu nível de persistência quando se depara com um conteúdo \ncomplexo que você não entende na primeira tentativa?")
-    p3 = obter_resposta_verificada("De 1 a 10, o quanto você utiliza métodos ativos de estudo (como fazer exercícios, \nexplicar a matéria em voz alta ou criar seus próprios resumos) em vez de apenas \nconsumir passivamente (apenas ler ou assistir vídeo-aula)")  
-    p4 = obter_resposta_verificada("Ao estudar um tema teórico chato, de 1 a 10, qual é a sua capacidade de visualizar \ncomo aquilo será útil para resolver problemas reais na sua futura carreira?")
-    p5 = obter_resposta_verificada("De 1 a 10, se o material do curso for ruim ou incompleto, quão proativo você é para \nbuscar a resposta sozinho em documentações, livros ou I.A, sem depender de um professor?")
+
+    p1 = get_validated_answer("On a scale from 1 to 10, how well can you keep a daily study routine, \neven on the days when you feel no motivation at all to study?")
+    p2 = get_validated_answer("From 1 to 10, how persistent are you when you face complex content \nthat you don't understand on the first try?")
+    p3 = get_validated_answer("From 1 to 10, how much do you use active study methods (such as solving exercises, \nexplaining the subject out loud or writing your own summaries) instead of just \nconsuming passively (only reading or watching video lessons)?")
+    p4 = get_validated_answer("When studying a boring theoretical topic, from 1 to 10, how well can you picture \nhow it will help you solve real problems in your future career?")
+    p5 = get_validated_answer("From 1 to 10, if the course material is poor or incomplete, how proactive are you in \nfinding the answer on your own in documentation, books or AI, without relying on a teacher?")
 
 # ==============================================================================================================
 
 
     clear_terminal()
-    header('Questionario Preenchido com Sucesso!!!')
+    header('Questionnaire Completed Successfully!!!')
 
 
 
-# ESPAÇO PARA EQUAÇÃO DO COEFICIENTE DE RENDIMENTO
+# PERFORMANCE COEFFICIENT EQUATION
 
 
-    peso1, peso2, peso3, peso4, peso5 = 0.1, 0.2, 0.3, 0.3 , 0.1
-    qualidade = p1 * peso1 + p2 * peso2 + p3 * peso3 + p4 * peso4 + p5 * peso5
+    weight1, weight2, weight3, weight4, weight5 = 0.1, 0.2, 0.3, 0.3 , 0.1
+    quality = p1 * weight1 + p2 * weight2 + p3 * weight3 + p4 * weight4 + p5 * weight5
 
-    typewriter(f"\nSeu coeficiente de rendimento é {qualidade:.2f}")
-    print('\n1 → baixa absorção de conteúdos \n' \
-    '10 → excelente compreensão das matérias')
+    typewriter(f"\nYour performance coefficient is {quality:.2f}")
+    print('\n1 → low content absorption \n' \
+    '10 → excellent understanding of the subjects')
     press_enter()
 
 #==============================================================================================================
 
-    return qualidade
+    return quality
 
 
 
@@ -218,7 +218,7 @@ def processo_cadastro():
     typewriter('Agora iremos definir o seu perfil de estudante')
     press_enter()
 
-    resultado_questionario = coeficiente_rendimento() 
+    resultado_questionario = performance_coefficient() 
 
     try:
         os.makedirs(caminho_usuario)
@@ -400,9 +400,9 @@ def cadastrar_novo_conteudo(nome_usuario):
     
     # questionario para avaliar a compreensão do usario
     print("\nResponda tudo em uma escala de 1 a 10:")
-    dominio = obter_resposta_verificada("Se voce precisasse dar uma aula sobre isso agora, quão bem voce se sairia?")
-    relevancia = obter_resposta_verificada("O quanto esse assunto é fundamental para seus objetivos atuais?")
-    engajamento = obter_resposta_verificada("O quanto você realmente gosta de aprender sobre isso?")
+    dominio = get_validated_answer("Se voce precisasse dar uma aula sobre isso agora, quão bem voce se sairia?")
+    relevancia = get_validated_answer("O quanto esse assunto é fundamental para seus objetivos atuais?")
+    engajamento = get_validated_answer("O quanto você realmente gosta de aprender sobre isso?")
     
     dificuldade = ((dominio*0.5) + (relevancia*0.3) + (engajamento*0.2)) # dificuldade atribuida
 

@@ -44,7 +44,7 @@ def enter_para_pular():
 # Utilizada para criar a pasta dos usuarios ao inicializar o programa
 def inicializar_programa():
 
-    pasta_usuarios = 'usuarios'
+    pasta_usuarios = 'users'
 
     if not os.path.exists(pasta_usuarios): # Verifica se existe, se não cria
         try:
@@ -189,7 +189,7 @@ Responda todas as perguntas em uma escala de 1 a 10, sendo:
 
 
 def processo_cadastro():
-    pasta_usuarios = 'usuarios' # criada no inicio da aplicação
+    pasta_usuarios = 'users' # criada no inicio da aplicação
     cabecalho("Cadastro de Usuário")
     print()
 
@@ -222,7 +222,7 @@ def processo_cadastro():
 
     try:
         os.makedirs(caminho_usuario)
-        caminho_arquivo_pessoal = os.path.join(caminho_usuario, f'pessoal_{nome}.txt') # informações de cadastro salvas em um arquivo txt
+        caminho_arquivo_pessoal = os.path.join(caminho_usuario, f'profile_{nome}.txt') # informações de cadastro salvas em um arquivo txt
 
         with open(caminho_arquivo_pessoal, "w") as f:
             f.write(f'{nome}\n')
@@ -247,7 +247,7 @@ def processo_cadastro():
 
 def processo_login():
 
-    pasta_usuarios = 'usuarios'
+    pasta_usuarios = 'users'
     cabecalho("Login")
     print()
     print("Nome")
@@ -255,7 +255,7 @@ def processo_login():
 
     #info_pessoais
     caminho_usuario = os.path.join(pasta_usuarios, nome) 
-    caminho_pessoal = os.path.join(caminho_usuario, f'pessoal_{nome}.txt')
+    caminho_pessoal = os.path.join(caminho_usuario, f'profile_{nome}.txt')
 
     # verifica se o nome corresponde a alguma pasta
     if not os.path.exists(caminho_usuario):
@@ -329,7 +329,7 @@ def processo_login():
 # Contabiliza quantas vezes o usuario acessou a aplicação, com a finalidade de promover melhor experiencia
 def contador_acessos(nome_usuario):
 
-    caminho_user = os.path.join('usuarios', nome_usuario, f'pessoal_{nome_usuario}.txt')
+    caminho_user = os.path.join('users', nome_usuario, f'profile_{nome_usuario}.txt')
     indice_qtd_acessos = 3 # referencia ao local do arquivo pessoal do usuario que corresponde a quantidade de acessos
 
     try:
@@ -389,7 +389,7 @@ def cadastrar_novo_conteudo(nome_usuario):
     cabecalho("Novo Cadastro de Estudo")
     
     # repositório para os estudos 
-    pasta_estudos = os.path.join('usuarios', nome_usuario, 'estudos')
+    pasta_estudos = os.path.join('users', nome_usuario, 'studies')
 
     if not os.path.exists(pasta_estudos): # se não tiver cria
         os.makedirs(pasta_estudos)
@@ -461,20 +461,20 @@ def cadastrar_novo_conteudo(nome_usuario):
     try:
         with open(caminho_final, 'w') as f:
 
-            f.write(f"Conteudo: {nome_conteudo}\n")
-            f.write(f"Dificuldade: {dificuldade}\n")
-            f.write(f"Data de Inclusao: {horario_registro}\n")
-            f.write(f"Resumo: {texto_referencia}\n")
+            f.write(f"Content: {nome_conteudo}\n")
+            f.write(f"Difficulty: {dificuldade}\n")
+            f.write(f"Date Added: {horario_registro}\n")
+            f.write(f"Summary: {texto_referencia}\n")
             f.write("-" * 20 + "\n")
             f.write("QUIZ:\n")
             for item in quiz_dados:
                 f.write(f"{item}\n")
             f.write("-" * 20 + "\n")
-            f.write("ARQUIVOS:\n")
+            f.write("FILES:\n")
             for arq in caminhos_arquivos:
                 f.write(f"{arq}\n")
             f.write("-" * 20 + "\n")
-            f.write('VIDEO-AULAS:\n')
+            f.write('VIDEO LESSONS:\n')
             for video in links:
                 f.write(f'{video}\n')
 
@@ -498,7 +498,7 @@ def cadastrar_novo_conteudo(nome_usuario):
 # Por meio do algoritmo de definição de prioridade calculada, se define ordena uma lista para fazer as revisões
 def obter_ranking_estudos(nome_usuario, qualidade_aluno):
 
-    pasta_estudos = os.path.join('usuarios', nome_usuario, 'estudos')
+    pasta_estudos = os.path.join('users', nome_usuario, 'studies')
     # Busca todos os estudos do usuario
     try:
         arquivos = []
@@ -518,10 +518,10 @@ def obter_ranking_estudos(nome_usuario, qualidade_aluno):
         
         with open(caminho_completo_estudo, 'r') as f:
             dados = f.readlines()
-            nome_conteudo = dados[0].strip().replace("Conteudo: ", "")
-            dificuldade_atribuida_usuario = float(dados[1].strip().replace("Dificuldade: ", ""))
+            nome_conteudo = dados[0].strip().replace("Content: ", "")
+            dificuldade_atribuida_usuario = float(dados[1].strip().replace("Difficulty: ", ""))
 
-            data_inclusao = dados[2].strip().replace('Data de Inclusao: ', '')
+            data_inclusao = dados[2].strip().replace('Date Added: ', '')
             dia_hora = data_inclusao.split(' ')
             dia = dia_hora[0]
             hora = dia_hora[1]
@@ -567,7 +567,7 @@ def obter_ranking_estudos(nome_usuario, qualidade_aluno):
 # método de revisar aquilo que voce já cadastrou de forma eficaz
 def revisar_conteudo(nome_usuario):
 
-    pasta_estudos = os.path.join('usuarios', nome_usuario, 'estudos')
+    pasta_estudos = os.path.join('users', nome_usuario, 'studies')
     if not os.path.exists(pasta_estudos):
         print("Nenhum estudo cadastrado ainda.")
         time.sleep(1)
@@ -638,8 +638,8 @@ def revisar_conteudo(nome_usuario):
         if ln.strip().startswith("-"):
             continue
 
-        if ln.startswith("Resumo:"):
-            resumo = ln.replace("Resumo:", "").strip()
+        if ln.startswith("Summary:"):
+            resumo = ln.replace("Summary:", "").strip()
             leitura_quiz = leitura_arquivos = leitura_videos = False
 
         elif ln.strip() == "QUIZ:":
@@ -647,12 +647,12 @@ def revisar_conteudo(nome_usuario):
             leitura_arquivos = leitura_videos = False
             continue
 
-        elif ln.strip() == "ARQUIVOS:":
+        elif ln.strip() == "FILES:":
             leitura_arquivos = True
             leitura_quiz = leitura_videos = False
             continue
 
-        elif ln.strip() == "VIDEO-AULAS:":
+        elif ln.strip() == "VIDEO LESSONS:":
             leitura_quiz = leitura_arquivos = False
             leitura_videos = True
             continue
@@ -672,7 +672,7 @@ def revisar_conteudo(nome_usuario):
             videos.append(ln.strip())
 
     cabecalho(f"Revisando: {arquivo_escolhido.replace('.txt','')}")
-    print("Resumo:")
+    print("Summary:")
     print(resumo)
     print()
     if arquivos_locais:
@@ -716,7 +716,7 @@ def revisar_conteudo(nome_usuario):
 
 def listar_editar_deletar(nome_usuario):
 
-    pasta_estudos = os.path.join('usuarios', nome_usuario, 'estudos')
+    pasta_estudos = os.path.join('users', nome_usuario, 'studies')
     if not os.path.exists(pasta_estudos):
         print("Nenhum estudo cadastrado ainda.")
         time.sleep(1)
@@ -777,12 +777,12 @@ def listar_editar_deletar(nome_usuario):
                 with open(caminho, 'r') as f:
                     linhas = f.readlines()
                 for idx, l in enumerate(linhas):
-                    if l.startswith("Resumo:"):
+                    if l.startswith("Summary:"):
                         print("Resumo atual:")
-                        print(l.replace("Resumo:", "").strip())
+                        print(l.replace("Summary:", "").strip())
                         novo = input("Novo resumo (deixe vazio para manter): ")
                         if novo.strip() != "":
-                            linhas[idx] = f"Resumo: {novo}\n"
+                            linhas[idx] = f"Summary: {novo}\n"
                         break
                 with open(caminho, 'w') as f:
                     f.writelines(linhas)
@@ -834,12 +834,12 @@ def listar_editar_deletar(nome_usuario):
 def menu_usuario(nome_usuario):
 
 
-    pasta_estudos = os.path.join('usuarios', nome_usuario, 'estudos')
+    pasta_estudos = os.path.join('users', nome_usuario, 'studies')
     if not os.path.exists(pasta_estudos):
         os.makedirs(pasta_estudos)
 
 
-    caminho_pessoal = os.path.join('usuarios', nome_usuario, f'pessoal_{nome_usuario}.txt')
+    caminho_pessoal = os.path.join('users', nome_usuario, f'profile_{nome_usuario}.txt')
     with open(caminho_pessoal, 'r') as f:
         dados_pessoais = f.readlines()
         qualidade_aluno = float(dados_pessoais[2].strip())

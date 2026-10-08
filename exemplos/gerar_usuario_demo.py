@@ -1,6 +1,6 @@
 """Cria um usuário de demonstração para experimentar o Synapsis sem cadastro.
 
-O Synapsis guarda os dados de cada estudante em `usuarios/`, que é uma pasta
+O Synapsis guarda os dados de cada estudante em `users/`, que é uma pasta
 ignorada pelo git — logo, um repositório recém-clonado não tem nenhum conteúdo
 para revisar e o ranking aparece vazio. Este script preenche essa lacuna:
 monta um usuário fictício com quatro matérias já cadastradas, cada uma com uma
@@ -113,20 +113,20 @@ def escrever_estudo(pasta_estudos, estudo):
     caminho = os.path.join(pasta_estudos, nome_arquivo)
 
     with open(caminho, 'w') as f:
-        f.write(f"Conteudo: {estudo['nome']}\n")
-        f.write(f"Dificuldade: {estudo['dificuldade']}\n")
-        f.write(f"Data de Inclusao: {horario}\n")
-        f.write(f"Resumo: {estudo['resumo']}\n")
+        f.write(f"Content: {estudo['nome']}\n")
+        f.write(f"Difficulty: {estudo['dificuldade']}\n")
+        f.write(f"Date Added: {horario}\n")
+        f.write(f"Summary: {estudo['resumo']}\n")
         f.write('-' * 20 + '\n')
         f.write('QUIZ:\n')
         for item in estudo['quiz']:
             f.write(f'{item}\n')
         f.write('-' * 20 + '\n')
-        f.write('ARQUIVOS:\n')
+        f.write('FILES:\n')
         for arquivo in estudo['arquivos']:
             f.write(f'{arquivo}\n')
         f.write('-' * 20 + '\n')
-        f.write('VIDEO-AULAS:\n')
+        f.write('VIDEO LESSONS:\n')
         for video in estudo['videos']:
             f.write(f'{video}\n')
 
@@ -134,11 +134,11 @@ def escrever_estudo(pasta_estudos, estudo):
 
 
 def main():
-    pasta_usuario = os.path.join('usuarios', NOME)
-    pasta_estudos = os.path.join(pasta_usuario, 'estudos')
+    pasta_usuario = os.path.join('users', NOME)
+    pasta_estudos = os.path.join(pasta_usuario, 'studies')
     os.makedirs(pasta_estudos, exist_ok=True)
 
-    caminho_pessoal = os.path.join(pasta_usuario, f'pessoal_{NOME}.txt')
+    caminho_pessoal = os.path.join(pasta_usuario, f'profile_{NOME}.txt')
     with open(caminho_pessoal, 'w') as f:
         f.write(f'{NOME}\n')
         f.write(f'{SENHA}\n')

@@ -126,6 +126,48 @@ def reveal_lines(lines, delay=0.06):
         pause(delay)
 
 
+LOGO = [
+    '█████ █   █ █   █  ███  ████  █████ █████ █████',
+    '█      █ █  ██  █ █   █ █   █ █       █   █    ',
+    '█████   █   █ █ █ █████ ████  █████   █   █████',
+    '    █   █   █  ██ █   █ █         █   █       █',
+    '█████   █   █   █ █   █ █     █████ █████ █████',
+]
+LOGO_GRADIENT = [51, 45, 39, 33, 27] # one shade of blue per logo row
+
+
+# A signal fires along an axon and lights up each neuron it reaches: ●━━━━●────○
+def synapse_pulse(width=41):
+    neurons = (0, width // 2, width - 1)
+
+    def frame(signal):
+        cells = []
+        for i in range(width):
+            if i in neurons:
+                cells.append(paint('●', GREEN) if i <= signal else paint('○', GRAY))
+            elif i == signal:
+                cells.append(paint('◆', CYAN))
+            else:
+                cells.append(paint('━', CYAN) if i < signal else paint('─', GRAY))
+        return ' ' * ((60 - width) // 2) + ''.join(cells)
+
+    if animations_enabled():
+        for signal in range(width):
+            print(f"\r{frame(signal)}", end="", flush=True)
+            time.sleep(0.025)
+    print(f"\r{frame(width)}")
+
+
+def show_logo():
+    clear_terminal()
+    print()
+    for row, color in zip(LOGO, LOGO_GRADIENT):
+        print(paint(row.center(60), color))
+        pause(0.08)
+    print()
+    synapse_pulse()
+
+
 
 
 
@@ -151,7 +193,11 @@ def initialize_program():
 # Short explanation of the application
 def show_intro():
 
-    header("Welcome to SYNAPSIS")
+    show_logo()
+    print()
+    line()
+    print("Welcome to SYNAPSIS".center(60))
+    line()
 
     msg = ("""
     Our mission is to turn reviewing what you study

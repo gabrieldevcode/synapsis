@@ -32,6 +32,7 @@ This is the final project for the **Computer Science 1** course.
 - [Registering content](#-registering-content)
 - [The priority ranking](#-the-priority-ranking)
 - [Review and quiz](#-review-and-quiz)
+- [Animations](#-animations)
 - [File format](#-file-format)
 - [Safety net](#-safety-net)
 - [Architecture](#-architecture)
@@ -350,6 +351,55 @@ the right text: there is no tolerance for synonyms.
 
 ---
 
+## ✨ Animations
+
+The terminal comes alive at the moments that matter, still with nothing but
+the standard library:
+
+| Where | What moves |
+|---|---|
+| Intro | The block-letter logo is drawn row by row in a blue gradient, then a signal fires along an axon and lights up each neuron it reaches |
+| Questionnaire | A progress bar "analyzes" your answers and the CR counts up from zero while a 0-10 meter fills |
+| Sign-up, login, saving, loading | A braille spinner settles into a green `✔`; a wrong password settles into a red `✘` |
+| Student area | On the first screen after login, the ranking slides in one row at a time |
+| Quiz | Green `✔ Correct!` / red `✘ Wrong.`, and the final score fills a 0-100% meter |
+| Exit | A typed farewell and one last synapse pulse |
+
+```
+      █████ █   █ █   █  ███  ████  █████ █████ █████
+      █      █ █  ██  █ █   █ █   █ █       █   █
+      █████   █   █ █ █ █████ ████  █████   █   █████
+          █   █   █  ██ █   █ █         █   █       █
+      █████   █   █   █ █   █ █     █████ █████ █████
+
+         ●━━━━━━━━━━━━━━━━━◆─○───────────────────○
+```
+
+Every animation draws its frames on a single line with `\r` and always ends on
+its final frame, so the screen reads the same with or without motion. Two
+environment variables control it:
+
+| Variable | Effect |
+|---|---|
+| `SYNAPSIS_NO_ANIMATION=1` | Skips all motion, typing effect included (slow terminals, screen readers, or just going faster) |
+| `NO_COLOR=1` | Drops the colors ([no-color.org](https://no-color.org)). Colors are also dropped automatically when the output is not a terminal |
+
+```bash
+SYNAPSIS_NO_ANIMATION=1 python synapsis.py
+```
+
+On Windows (`cmd.exe` / PowerShell):
+
+```bat
+set SYNAPSIS_NO_ANIMATION=1 && python synapsis.py
+```
+
+```powershell
+$env:SYNAPSIS_NO_ANIMATION = "1"; python synapsis.py
+```
+
+---
+
 ## 📄 File format
 
 The program's whole state is readable text. You can open, read and fix it with
@@ -432,6 +482,8 @@ A single module, `synapsis.py`, organized in blocks by responsibility.
 | Function | Role |
 |---|---|
 | `clear_terminal`, `line`, `header`, `typewriter`, `press_enter` | Presentation layer: everything drawn on screen goes through here |
+| `spinner`, `progress_bar`, `animated_meter`, `reveal_lines`, `synapse_pulse` | Animation layer; `animations_enabled` and `paint` honor `SYNAPSIS_NO_ANIMATION` and `NO_COLOR` |
+| `show_logo` / `say_goodbye` | Animated opening logo and farewell screen |
 | `initialize_program` | Makes sure `users/` exists before anything else |
 | `show_intro` | Opening screen |
 | `get_validated_answer` | Single entry point for every 1 to 10 score |

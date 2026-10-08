@@ -382,110 +382,110 @@ def delta_time(date, hour):
 
 
 
-## FUNÇÕES QUE FAZEM O DIFERENCIAL DA APLICAÇÃO
+## THE FUNCTIONS THAT MAKE THE APPLICATION STAND OUT
 
-# deixa salvo de forma organizada o conteudo desejado
-def cadastrar_novo_conteudo(nome_usuario):
-    header("Novo Cadastro de Estudo")
-    
-    # repositório para os estudos 
-    pasta_estudos = os.path.join('users', nome_usuario, 'studies')
+# saves the desired content in an organized way
+def register_content(username):
+    header("New Study Entry")
 
-    if not os.path.exists(pasta_estudos): # se não tiver cria
-        os.makedirs(pasta_estudos)
-    
-    # infos conteudo
-    nome_conteudo = input("Nome do Conteúdo/Matéria: ")
-    texto_referencia = input("Descrição ou Resumo do conteúdo: ")
-    
-    # questionario para avaliar a compreensão do usario
-    print("\nResponda tudo em uma escala de 1 a 10:")
-    dominio = get_validated_answer("Se voce precisasse dar uma aula sobre isso agora, quão bem voce se sairia?")
-    relevancia = get_validated_answer("O quanto esse assunto é fundamental para seus objetivos atuais?")
-    engajamento = get_validated_answer("O quanto você realmente gosta de aprender sobre isso?")
-    
-    dificuldade = ((dominio*0.5) + (relevancia*0.3) + (engajamento*0.2)) # dificuldade atribuida
+    # repository for the studies
+    studies_folder = os.path.join('users', username, 'studies')
 
-    horario_registro = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-    
+    if not os.path.exists(studies_folder): # create it if missing
+        os.makedirs(studies_folder)
+
+    # content info
+    content_name = input("Content/Subject name: ")
+    reference_text = input("Description or summary of the content: ")
+
+    # questionnaire to assess how well the user understands it
+    print("\nAnswer everything on a scale from 1 to 10:")
+    mastery = get_validated_answer("If you had to teach a class on this right now, how well would you do?")
+    relevance = get_validated_answer("How essential is this subject to your current goals?")
+    engagement = get_validated_answer("How much do you actually enjoy learning about this?")
+
+    difficulty = ((mastery*0.5) + (relevance*0.3) + (engagement*0.2)) # assigned difficulty
+
+    registration_time = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
 
 
-    # --- Cadastrar Quiz ---
-    quiz_dados = []
-    print("\n--- Criação de Quiz Rápido para revisões futuras ---")
+
+    # --- Register Quiz ---
+    quiz_data = []
+    print("\n--- Quick Quiz for future reviews ---")
     while True:
-        opcao = input("Deseja adicionar uma pergunta ao quiz? (S/N): ").upper()
-        if opcao == 'S':
-            pergunta = input("Pergunta: ")
-            resposta = input("Resposta correta: ")
-            quiz_dados.append([pergunta, resposta])
-        elif opcao == 'N':
+        option = input("Do you want to add a question to the quiz? (Y/N): ").upper()
+        if option == 'Y':
+            question = input("Question: ")
+            answer = input("Correct answer: ")
+            quiz_data.append([question, answer])
+        elif option == 'N':
             break
         else:
-            print("Entrada inválida! Digite S ou N")
+            print("Invalid input! Type Y or N")
 
-    # --- Arquivos Locais ---
-    caminhos_arquivos = []
-    print("\n--- Anexar Arquivos do Computador ---")
-    print('-> Adicone os caminhos relativos de: Apresentações, documentos, imagens, etc..')
+    # --- Local Files ---
+    file_paths = []
+    print("\n--- Attach Files from Your Computer ---")
+    print('-> Add the relative paths of: slides, documents, images, etc..')
     while True:
-        opcao = input("Deseja salvar o caminho de um arquivo local? (S/N): ").upper()
-        if opcao == 'S':
-            caminho = input("Cole o caminho do arquivo aqui: ").strip('"')
-            caminhos_arquivos.append(caminho)
-        elif opcao == 'N':
+        option = input("Do you want to save the path of a local file? (Y/N): ").upper()
+        if option == 'Y':
+            path = input("Paste the file path here: ").strip('"')
+            file_paths.append(path)
+        elif option == 'N':
             break
         else:
-            print("Entrada inválida! Digite S ou N")
+            print("Invalid input! Type Y or N")
 
-    # --- Video-Aulas ---
+    # --- Video Lessons ---
     links = []
-    print("\n--- Salvar links de Videoaulas ---")
+    print("\n--- Save Video Lesson Links ---")
     while True:
-        opcao = input("Deseja salvar o link de alguma video-aula? (S/N): ").upper()
-        if opcao == 'S':
-            link = input("Cole o link do video aqui: ")
+        option = input("Do you want to save a video lesson link? (Y/N): ").upper()
+        if option == 'Y':
+            link = input("Paste the video link here: ")
             links.append(link)
-        elif opcao == 'N':
+        elif option == 'N':
             break
         else:
-            print("Entrada inválida! Digite S ou N")
+            print("Invalid input! Type Y or N")
 
 
-    # --- Salvando o Arquivo ---
-    nome_arquivo = f"{nome_conteudo.replace(' ', '_')}.txt"
-    caminho_final = os.path.join(pasta_estudos, nome_arquivo)
-    
+    # --- Saving the File ---
+    file_name = f"{content_name.replace(' ', '_')}.txt"
+    final_path = os.path.join(studies_folder, file_name)
 
-    # Salva no arquivo txt as infos do estudo
+
+    # Saves the study info in the txt file
     try:
-        with open(caminho_final, 'w') as f:
+        with open(final_path, 'w') as f:
 
-            f.write(f"Content: {nome_conteudo}\n")
-            f.write(f"Difficulty: {dificuldade}\n")
-            f.write(f"Date Added: {horario_registro}\n")
-            f.write(f"Summary: {texto_referencia}\n")
+            f.write(f"Content: {content_name}\n")
+            f.write(f"Difficulty: {difficulty}\n")
+            f.write(f"Date Added: {registration_time}\n")
+            f.write(f"Summary: {reference_text}\n")
             f.write("-" * 20 + "\n")
             f.write("QUIZ:\n")
-            for item in quiz_dados:
+            for item in quiz_data:
                 f.write(f"{item}\n")
             f.write("-" * 20 + "\n")
             f.write("FILES:\n")
-            for arq in caminhos_arquivos:
-                f.write(f"{arq}\n")
+            for file in file_paths:
+                f.write(f"{file}\n")
             f.write("-" * 20 + "\n")
             f.write('VIDEO LESSONS:\n')
             for video in links:
                 f.write(f'{video}\n')
 
 
-        line()                
-        typewriter("Conteúdo salvo com sucesso!", 0.02)
-        line
+        line()
+        typewriter("Content saved successfully!", 0.02)
+        line()
         time.sleep(1)
 
     except Exception as e:
-        print(f"Erro ao salvar: {e}")
+        print(f"Error while saving: {e}")
         press_enter()
 
 
@@ -907,7 +907,7 @@ def menu_usuario(nome_usuario):
         escolha = input("Escolha: ")
         
         if escolha == '1':
-            cadastrar_novo_conteudo(nome_usuario)
+            register_content(nome_usuario)
             
         elif escolha == '2':
             revisar_conteudo(nome_usuario)            

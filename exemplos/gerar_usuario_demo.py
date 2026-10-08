@@ -99,7 +99,7 @@ ESTUDOS = [
 
 
 def escrever_estudo(pasta_estudos, estudo):
-    """Grava um conteúdo no mesmo formato que `cadastrar_novo_conteudo` produz.
+    """Grava um conteúdo no mesmo formato que `register_content` produz.
 
     O `open` é chamado sem `encoding=` de propósito. O Synapsis também não
     informa encoding ao gravar nem ao ler, então ambos usam o padrão da

@@ -1,157 +1,155 @@
-"""Cria um usuário de demonstração para experimentar o Synapsis sem cadastro.
+"""Creates a demo user so you can try Synapsis without signing up.
 
-O Synapsis guarda os dados de cada estudante em `users/`, que é uma pasta
-ignorada pelo git — logo, um repositório recém-clonado não tem nenhum conteúdo
-para revisar e o ranking aparece vazio. Este script preenche essa lacuna:
-monta um usuário fictício com quatro matérias já cadastradas, cada uma com uma
-data de inclusão diferente, para que o ranking de prioridades tenha o que
-ordenar logo no primeiro acesso.
+Synapsis stores each student's data in `users/`, a folder ignored by git, so
+a freshly cloned repository has no content to review and the ranking shows up
+empty. This script fills that gap: it builds a fictional user with four
+subjects already registered, each one with a different date added, so the
+priority ranking has something to sort on the very first login.
 
-Uso, a partir da raiz do repositório:
+Usage, from the repository root:
 
-    python exemplos/gerar_usuario_demo.py
+    python examples/generate_demo_user.py
 
-Depois, rode `python synapsis.py`, escolha "1. Login" e entre com:
+Then run `python synapsis.py`, choose "1. Login" and sign in with:
 
-    usuário: demo
-    senha:   demo123
+    username: demo
+    password: demo123
 
-Os dados são inventados. Nenhuma informação real de estudante é distribuída
-junto com o projeto.
+The data is made up. No real student information ships with the project.
 """
 
 import datetime
 import os
 
-NOME = 'demo'
-SENHA = 'demo123'
-COEFICIENTE = 6.700  # equivalente a responder o questionário com notas medianas
+NAME = 'demo'
+PASSWORD = 'demo123'
+COEFFICIENT = 6.700  # equivalent to answering the questionnaire with middling scores
 
 
-# Cada entrada descreve uma matéria: quantas horas atrás ela foi cadastrada,
-# a dificuldade calculada, o resumo, o quiz e os anexos.
+# Each entry describes a subject: how many hours ago it was registered, the
+# computed difficulty, the summary, the quiz and the attachments.
 #
-# As horas variam de propósito (2h a 15 dias) para cobrir várias das faixas
-# temporais que o ranking usa. Os caminhos de arquivo são fictícios: servem
-# para mostrar o formato, não apontam para nada que exista.
-ESTUDOS = [
+# The hours vary on purpose (2h to 15 days) to cover several of the time bands
+# the ranking uses. The file paths are fictional: they show the format and do
+# not point to anything that exists.
+STUDIES = [
     {
-        'nome': 'Estruturas Condicionais',
-        'horas_atras': 2,
-        'dificuldade': 8.4,
-        'resumo': (
-            'if/elif/else, operadores de comparacao e encadeamento de condicoes. '
-            'Cuidado com o uso de = no lugar de == dentro do if.'
+        'name': 'Conditional Statements',
+        'hours_ago': 2,
+        'difficulty': 8.4,
+        'summary': (
+            'if/elif/else, comparison operators and chaining conditions. '
+            'Watch out for using = instead of == inside an if.'
         ),
         'quiz': [
-            ['Qual operador compara igualdade em Python?', '=='],
-            ['O bloco else e obrigatorio depois de um if?', 'nao'],
+            ['Which operator compares equality in Python?', '=='],
+            ['Is the else block required after an if?', 'no'],
         ],
-        'arquivos': ['materiais/computacao1/aula03_condicionais.pdf'],
-        'videos': ['https://exemplo.invalido/aula-condicionais'],
+        'files': ['materials/cs1/lecture03_conditionals.pdf'],
+        'videos': ['https://example.invalid/lesson-conditionals'],
     },
     {
-        'nome': 'Laços de Repetição',
-        'horas_atras': 20,
-        'dificuldade': 6.1,
-        'resumo': (
-            'while roda enquanto a condicao for verdadeira; for percorre um '
-            'iteravel. enumerate devolve indice e valor ao mesmo tempo.'
+        'name': 'Loops',
+        'hours_ago': 20,
+        'difficulty': 6.1,
+        'summary': (
+            'while runs as long as the condition is true; for walks an '
+            'iterable. enumerate returns the index and the value at once.'
         ),
         'quiz': [
-            ['Que funcao devolve indice e valor durante um for?', 'enumerate'],
-            ['Qual comando interrompe um laco imediatamente?', 'break'],
+            ['Which function returns index and value during a for loop?', 'enumerate'],
+            ['Which statement stops a loop immediately?', 'break'],
         ],
-        'arquivos': ['materiais/computacao1/aula05_lacos.pdf'],
+        'files': ['materials/cs1/lecture05_loops.pdf'],
         'videos': [],
     },
     {
-        'nome': 'Manipulação de Arquivos',
-        'horas_atras': 75,
-        'dificuldade': 4.3,
-        'resumo': (
-            'open() com os modos r, w e a. O with fecha o arquivo sozinho, '
-            'inclusive quando ocorre uma excecao no meio da escrita.'
+        'name': 'File Handling',
+        'hours_ago': 75,
+        'difficulty': 4.3,
+        'summary': (
+            'open() with the r, w and a modes. with closes the file on its own, '
+            'even when an exception happens halfway through writing.'
         ),
         'quiz': [
-            ['Qual modo de open apaga o conteudo anterior do arquivo?', 'w'],
-            ['Qual metodo le todas as linhas e devolve uma lista?', 'readlines'],
+            ['Which open mode erases the previous content of the file?', 'w'],
+            ['Which method reads every line and returns a list?', 'readlines'],
         ],
-        'arquivos': [],
-        'videos': ['https://exemplo.invalido/aula-arquivos'],
+        'files': [],
+        'videos': ['https://example.invalid/lesson-files'],
     },
     {
-        'nome': 'Recursividade',
-        'horas_atras': 360,  # 15 dias — cai na última faixa temporal
-        'dificuldade': 2.8,
-        'resumo': (
-            'Toda funcao recursiva precisa de um caso base, senao a pilha de '
-            'chamadas estoura. Exemplo classico: fatorial e Fibonacci.'
+        'name': 'Recursion',
+        'hours_ago': 360,  # 15 days, falls in the last time band
+        'difficulty': 2.8,
+        'summary': (
+            'Every recursive function needs a base case, otherwise the call '
+            'stack overflows. Classic examples: factorial and Fibonacci.'
         ),
         'quiz': [
-            ['Como se chama a condicao que encerra a recursao?', 'caso base'],
-            ['Que erro o Python levanta sem caso base?', 'RecursionError'],
+            ['What is the condition that ends the recursion called?', 'base case'],
+            ['Which error does Python raise without a base case?', 'RecursionError'],
         ],
-        'arquivos': [],
+        'files': [],
         'videos': [],
     },
 ]
 
 
-def escrever_estudo(pasta_estudos, estudo):
-    """Grava um conteúdo no mesmo formato que `register_content` produz.
+def write_study(studies_folder, study):
+    """Writes one piece of content in the same format `register_content` produces.
 
-    O `open` é chamado sem `encoding=` de propósito. O Synapsis também não
-    informa encoding ao gravar nem ao ler, então ambos usam o padrão da
-    plataforma (cp1252 no Windows, UTF-8 no Linux). Fixar UTF-8 aqui faria os
-    acentos chegarem embaralhados na tela do programa no Windows.
+    `open` is called without `encoding=` on purpose. Synapsis does not set an
+    encoding when writing or reading either, so both use the platform default
+    (cp1252 on Windows, UTF-8 on Linux). Forcing UTF-8 here would make accented
+    characters show up garbled on the program's screen on Windows.
     """
-    registro = datetime.datetime.now() - datetime.timedelta(hours=estudo['horas_atras'])
-    horario = registro.strftime('%d/%m/%Y %H:%M')
+    registered_at = datetime.datetime.now() - datetime.timedelta(hours=study['hours_ago'])
+    timestamp = registered_at.strftime('%d/%m/%Y %H:%M')
 
-    nome_arquivo = f"{estudo['nome'].replace(' ', '_')}.txt"
-    caminho = os.path.join(pasta_estudos, nome_arquivo)
+    file_name = f"{study['name'].replace(' ', '_')}.txt"
+    path = os.path.join(studies_folder, file_name)
 
-    with open(caminho, 'w') as f:
-        f.write(f"Content: {estudo['nome']}\n")
-        f.write(f"Difficulty: {estudo['dificuldade']}\n")
-        f.write(f"Date Added: {horario}\n")
-        f.write(f"Summary: {estudo['resumo']}\n")
+    with open(path, 'w') as f:
+        f.write(f"Content: {study['name']}\n")
+        f.write(f"Difficulty: {study['difficulty']}\n")
+        f.write(f"Date Added: {timestamp}\n")
+        f.write(f"Summary: {study['summary']}\n")
         f.write('-' * 20 + '\n')
         f.write('QUIZ:\n')
-        for item in estudo['quiz']:
+        for item in study['quiz']:
             f.write(f'{item}\n')
         f.write('-' * 20 + '\n')
         f.write('FILES:\n')
-        for arquivo in estudo['arquivos']:
-            f.write(f'{arquivo}\n')
+        for file in study['files']:
+            f.write(f'{file}\n')
         f.write('-' * 20 + '\n')
         f.write('VIDEO LESSONS:\n')
-        for video in estudo['videos']:
+        for video in study['videos']:
             f.write(f'{video}\n')
 
-    return caminho
+    return path
 
 
 def main():
-    pasta_usuario = os.path.join('users', NOME)
-    pasta_estudos = os.path.join(pasta_usuario, 'studies')
-    os.makedirs(pasta_estudos, exist_ok=True)
+    user_folder = os.path.join('users', NAME)
+    studies_folder = os.path.join(user_folder, 'studies')
+    os.makedirs(studies_folder, exist_ok=True)
 
-    caminho_pessoal = os.path.join(pasta_usuario, f'profile_{NOME}.txt')
-    with open(caminho_pessoal, 'w') as f:
-        f.write(f'{NOME}\n')
-        f.write(f'{SENHA}\n')
-        f.write(f'{COEFICIENTE:.3f}\n')
+    profile_path = os.path.join(user_folder, f'profile_{NAME}.txt')
+    with open(profile_path, 'w') as f:
+        f.write(f'{NAME}\n')
+        f.write(f'{PASSWORD}\n')
+        f.write(f'{COEFFICIENT:.3f}\n')
         f.write('0\n')
 
-    print(f'Perfil criado:  {caminho_pessoal}')
-    for estudo in ESTUDOS:
-        print(f'Estudo criado:  {escrever_estudo(pasta_estudos, estudo)}')
+    print(f'Profile created: {profile_path}')
+    for study in STUDIES:
+        print(f'Study created:   {write_study(studies_folder, study)}')
 
     print()
-    print(f'Pronto. Rode `python synapsis.py`, escolha "1. Login" e entre com')
-    print(f'usuario "{NOME}" e senha "{SENHA}".')
+    print(f'Done. Run `python synapsis.py`, choose "1. Login" and sign in with')
+    print(f'username "{NAME}" and password "{PASSWORD}".')
 
 
 if __name__ == '__main__':
